@@ -1,24 +1,4 @@
-// import { Header } from "@/components/header"
-// import { HeroSection } from "@/components/hero-section"
-// import { StatsSection } from "@/components/stats-section"
-// import { ServicesSection } from "@/components/services-section"
-// import { ClientsSection } from "@/components/clients-section"
-// import { Footer } from "@/components/footer"
 
-// export default function Home() {
-//   return (
-//     <div className="min-h-screen">
-//       <Header />
-//       <main>
-//         <HeroSection />
-//         <StatsSection />
-//         <ServicesSection />
-//         <ClientsSection />
-//       </main>
-//       <Footer />
-//     </div>
-//   )
-// }
 import { Header } from "@/components/header"
 import { HeroSection } from "@/components/hero-section"
 import { WelcomeSection } from "@/components/welcome-section"
