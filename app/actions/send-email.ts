@@ -6,8 +6,8 @@ import { headers } from "next/headers"
 const RATE_LIMIT_WINDOW_MS = 60_000
 const RATE_LIMIT_MAX = 5
 
-// CHANGE THIS to your verified Resend email
-const TESTING_RECIPIENT = "igabdullah11@gmail.com"
+const NON_PROD_RECIPIENT = "igabdullah11@gmail.com"
+const PROD_RECIPIENT = "info@powersolid-intl.com"
 
 /* ------------------ RATE LIMIT ------------------ */
 const rateLimitStore = new Map<string, { count: number; resetAt: number }>()
@@ -56,15 +56,6 @@ function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 }
 
-function parseRecipientList(raw?: string): string[] {
-  if (!raw) return []
-  return raw
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean)
-    .filter(isValidEmail)
-}
-
 /* ------------------ MAIN ACTION ------------------ */
 export async function sendContactEmail(
   formData: {
@@ -85,7 +76,9 @@ export async function sendContactEmail(
     }
 
     /* ---------- ENV DETECTION (VERCEL-SAFE) ---------- */
-    const isProd = process.env.VERCEL_ENV === "production"
+    const isProd =
+      process.env.VERCEL_ENV === "production" ||
+      (!process.env.VERCEL_ENV && process.env.NODE_ENV === "production")
 
     /* ---------- INPUT SANITIZATION ---------- */
     const fullName = clamp(normalizeLine(formData.fullName || ""), 120)
@@ -142,18 +135,8 @@ export async function sendContactEmail(
     }
 
     /* ---------- RECIPIENT LOGIC ---------- */
-    const recipientsFromResendTo = parseRecipientList(process.env.RESEND_TO)
-    const recipientsFromContactTo = parseRecipientList(
-      process.env.CONTACT_EMAIL_TO
-    )
-
-    const recipients = isProd
-      ? recipientsFromResendTo.length
-        ? recipientsFromResendTo
-        : recipientsFromContactTo.length
-          ? recipientsFromContactTo
-          : ["igabdullah11@gmail.com"]
-      : [TESTING_RECIPIENT] // 👈 RESEND TEST MODE FIX
+    // Requirement: preview/development → NON_PROD_RECIPIENT, production → PROD_RECIPIENT
+    const recipients = [isProd ? PROD_RECIPIENT : NON_PROD_RECIPIENT]
 
     /* ---------- SEND ---------- */
     const response = await fetch("https://api.resend.com/emails", {
