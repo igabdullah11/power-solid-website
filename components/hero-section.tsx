@@ -148,7 +148,6 @@ export function HeroSection() {
             alt=""
             fill
             sizes="100vw"
-            quality={70}
             priority={i === 0}
             className={`object-cover ${i === currentIndex && !isTransitioning ? "hero-kenburns" : ""}`}
           />
