@@ -1,70 +1,8 @@
-// import { Card, CardContent } from "@/components/ui/card"
-// import Image from "next/image"
+"use client"
 
-// const clients = [
-//   { name: "Saudi Aramco", logo: "/saudi-aramco-logo.png" },
-//   { name: "SABIC", logo: "/SABIC-logo.png" },
-//   { name: "Riyadh Development Company", logo: "/riyadh-development-company-logo.jpg" },
-//   { name: "Saudi Electric Company", logo: "/saudi-electric-company-logo.jpg" },
-//   { name: "Saudi Vision 2030", logo: "/saudi-vision-2030-logo.png" },
-//   { name: "Tadawul Group", logo: "/tadawul-group-logo.jpg" },
-// ]
-
-// export function ClientsSection() {
-//   return (
-//     <section className="py-20 bg-gradient-to-b from-white to-gray-50">
-//       <div className="container mx-auto px-6">
-//         <div className="text-center mb-16">
-//           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Major Clients</h2>
-//           <div className="w-20 h-1 bg-[#d4af37] mx-auto mb-4" />
-//           <p className="text-gray-600 max-w-2xl mx-auto text-lg">
-//             Trusted by leading organizations across Saudi Arabia
-//           </p>
-//         </div>
-
-//         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-//           {clients.map((client, index) => (
-//             <Card
-//               key={index}
-//               className="group hover:shadow-xl transition-all duration-300 border-gray-200 hover:border-[#d4af37] hover:-translate-y-1 bg-white"
-//             >
-//               <CardContent className="p-8 flex flex-col items-center justify-center min-h-[160px]">
-//                 <div className="relative w-full h-24 flex items-center justify-center grayscale group-hover:grayscale-0 transition-all duration-300">
-//                   <Image
-//                     src={client.logo || "/placeholder.svg"}
-//                     alt={`${client.name} logo`}
-//                     width={200}
-//                     height={96}
-//                     className="object-contain"
-//                   />
-//                 </div>
-//               </CardContent>
-//             </Card>
-//           ))}
-//         </div>
-
-//         <div className="mt-16 text-center">
-//           <div className="inline-flex items-center gap-8 flex-wrap justify-center">
-//             <div className="flex items-center gap-2">
-//               <div className="w-3 h-3 bg-[#d4af37] rounded-full"></div>
-//               <span className="text-gray-600 font-medium">ISO Certified</span>
-//             </div>
-//             <div className="flex items-center gap-2">
-//               <div className="w-3 h-3 bg-[#d4af37] rounded-full"></div>
-//               <span className="text-gray-600 font-medium">20+ Years Experience</span>
-//             </div>
-//             <div className="flex items-center gap-2">
-//               <div className="w-3 h-3 bg-[#d4af37] rounded-full"></div>
-//               <span className="text-gray-600 font-medium">150+ Projects Delivered</span>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </section>
-//   )
-// }
-import { Card, CardContent } from "@/components/ui/card"
 import Image from "next/image"
+import { useLanguage } from "@/components/language-provider"
+import { pickLang } from "@/lib/i18n"
 
 const clients = [
   { name: "Saudi Aramco", logo: "/saudi-aramco-logo.png" },
@@ -76,51 +14,73 @@ const clients = [
 ]
 
 export function ClientsSection() {
+  const { lang } = useLanguage()
+
   return (
-    <section className="py-20 bg-gradient-to-b from-white to-gray-50">
+    <section className="py-20 md:py-28 bg-background border-t border-border">
       <div className="container mx-auto px-6">
+        {/* Section header - Nesma style */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Major Clients</h2>
-          <div className="w-20 h-1 bg-[#d4af37] mx-auto mb-4" />
-          <p className="text-gray-600 max-w-2xl mx-auto text-lg">
-            Trusted by leading organizations across Saudi Arabia
+          <div className="flex items-center justify-center gap-4 mb-4">
+            <div className="h-px w-12 bg-accent" />
+            <span className="text-xs font-semibold tracking-[0.25em] text-accent uppercase">
+              {pickLang(lang, { en: "Our Partners", ar: "شركاؤنا" })}
+            </span>
+            <div className="h-px w-12 bg-accent" />
+          </div>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
+            {pickLang(lang, { en: "Trusted by", ar: "موثوق من قبل" })}{" "}
+            <span className="text-accent">{pickLang(lang, { en: "Industry Leaders", ar: "روّاد الصناعة" })}</span>
+          </h2>
+          <p className="text-foreground/60 max-w-2xl mx-auto text-lg">
+            {pickLang(lang, {
+              en: "Partnering with leading organizations across Saudi Arabia",
+              ar: "شراكات مع جهات رائدة في أنحاء المملكة العربية السعودية",
+            })}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        {/* Clients grid - Nesma style */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-0 border border-border max-w-6xl mx-auto">
           {clients.map((client, index) => (
-            <Card
+            <div
               key={index}
-              className="group hover:shadow-xl transition-all duration-300 border-gray-200 hover:border-[#d4af37] hover:-translate-y-1 bg-white"
+              className="group p-8 border-b border-r border-border flex items-center justify-center hover:bg-secondary transition-all"
             >
-              <CardContent className="p-8 flex flex-col items-center justify-center min-h-[160px]">
-                <div className="relative w-full h-24 flex items-center justify-center grayscale group-hover:grayscale-0 transition-all duration-300">
-                  <Image
-                    src={client.logo || "/placeholder.svg"}
-                    alt={`${client.name} logo`}
-                    width={200}
-                    height={96}
-                    className="object-contain"
-                  />
-                </div>
-              </CardContent>
-            </Card>
+              <div className="relative w-full h-16 flex items-center justify-center grayscale group-hover:grayscale-0 transition-all duration-300">
+                <Image
+                  src={client.logo || "/placeholder.svg"}
+                  alt={`${client.name} logo`}
+                  width={120}
+                  height={64}
+                  className="object-contain max-h-16"
+                />
+              </div>
+            </div>
           ))}
         </div>
 
-        <div className="mt-16 text-center">
-          <div className="inline-flex items-center gap-8 flex-wrap justify-center">
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-[#d4af37] rounded-full"></div>
-              <span className="text-gray-600 font-medium">ISO Certified</span>
+        {/* Bottom badges - Nesma style */}
+        <div className="mt-16 flex flex-wrap items-center justify-center gap-8 md:gap-16">
+          <div className="flex items-center gap-3">
+            <div className="w-1 h-8 bg-accent" />
+            <div>
+              <div className="text-sm font-semibold text-foreground">{pickLang(lang, { en: "ISO Certified", ar: "اعتماد ISO" })}</div>
+              <div className="text-xs text-foreground/50">{pickLang(lang, { en: "Quality Management", ar: "إدارة الجودة" })}</div>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-[#d4af37] rounded-full"></div>
-              <span className="text-gray-600 font-medium">20+ Years Experience</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="w-1 h-8 bg-accent" />
+            <div>
+              <div className="text-sm font-semibold text-foreground">{pickLang(lang, { en: "10+ Years", ar: "10+ سنوات" })}</div>
+              <div className="text-xs text-foreground/50">{pickLang(lang, { en: "Industry Experience", ar: "خبرة صناعية" })}</div>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-[#d4af37] rounded-full"></div>
-              <span className="text-gray-600 font-medium">150+ Projects Delivered</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="w-1 h-8 bg-accent" />
+            <div>
+              <div className="text-sm font-semibold text-foreground">{pickLang(lang, { en: "200+ Projects", ar: "200+ مشروع" })}</div>
+              <div className="text-xs text-foreground/50">{pickLang(lang, { en: "Successfully Delivered", ar: "تم تسليمها بنجاح" })}</div>
             </div>
           </div>
         </div>

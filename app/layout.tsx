@@ -2,6 +2,7 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Inter, Manrope, Space_Grotesk } from "next/font/google"
 import "./globals.css"
+import { LanguageProvider } from "@/components/language-provider"
 
 const bodyFont = Inter({
   subsets: ["latin"],
@@ -46,7 +47,9 @@ export default function RootLayout({
       lang="en"
       className={`${bodyFont.variable} ${subFont.variable} ${headingFont.variable}`}
     >
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        <LanguageProvider>{children}</LanguageProvider>
+      </body>
     </html>
   )
 }

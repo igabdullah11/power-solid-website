@@ -1,97 +1,134 @@
+"use client"
+
 import { Card, CardContent } from "@/components/ui/card"
 import { Users, HardHat, Shield, Wrench, Truck, Factory } from "lucide-react"
 import { ArrowRight } from "lucide-react"
 import Link from "next/link"
+import { useLanguage } from "@/components/language-provider"
+import { pickLang } from "@/lib/i18n"
 
 const services = [
   {
     icon: Users,
-    title: "Manpower Supply",
-    description:
-      "Certified Riggers (I, II, III), WPRs, Firewatchers, Safety Officers, Electricians, Welders, Helpers and full industrial manpower teams for short & long-term projects.",
+    title: { en: "Manpower Supply", ar: "توريد القوى العاملة" },
+    description: {
+      en: "Certified Riggers (I, II, III), WPRs, Firewatchers, Safety Officers, Electricians, Welders, Helpers and full industrial manpower teams.",
+      ar: "رافعات (I, II, III) معتمدة، مستلمو تصاريح العمل، مراقبو الحريق، مسؤولو السلامة، كهربائيون، لحّامون، مساعدين وفرق عمالة صناعية متكاملة.",
+    },
   },
   {
     icon: Factory,
-    title: "Shutdown & Turnaround Support",
-    description:
-      "Rapid mobilization of large manpower teams for plant shutdowns, turnarounds and emergency maintenance across Jubail and Eastern Province.",
+    title: { en: "Shutdown & Turnaround", ar: "دعم الإيقاف والتوقفات" },
+    description: {
+      en: "Rapid mobilization of large manpower teams for plant shutdowns, turnarounds and emergency maintenance.",
+      ar: "تعبئة سريعة لفرق كبيرة لدعم إيقاف المصانع والتوقفات والصيانة الطارئة.",
+    },
   },
   {
     icon: Wrench,
-    title: "Industrial Maintenance",
-    description:
-      "Mechanical, electrical and instrumentation manpower support for routine, preventive and breakdown maintenance in industrial plants.",
+    title: { en: "Industrial Maintenance", ar: "الصيانة الصناعية" },
+    description: {
+      en: "Mechanical, electrical and instrumentation manpower support for routine, preventive and breakdown maintenance.",
+      ar: "دعم عمالة ميكانيكية وكهربائية وأجهزة دقيقة للصيانة الدورية والوقائية وصيانة الأعطال.",
+    },
   },
   {
     icon: HardHat,
-    title: "Mechanical & Civil Contracting",
-    description:
-      "Piping, structural fabrication, equipment erection, excavation, foundation and general industrial construction services.",
+    title: { en: "Mechanical & Civil", ar: "مقاولات ميكانيكية ومدنية" },
+    description: {
+      en: "Piping, structural fabrication, equipment erection, excavation, foundation and general construction.",
+      ar: "أعمال الأنابيب، تصنيع الهياكل، تركيب المعدات، الحفر، الأساسات وأعمال الإنشاء العامة.",
+    },
   },
   {
     icon: Truck,
-    title: "Equipment with Operator",
-    description:
-      "Cranes, forklifts, manlifts, boom trucks, generators and air compressors provided with certified operators and safety documents.",
+    title: { en: "Equipment with Operator", ar: "معدات مع مشغل" },
+    description: {
+      en: "Cranes, forklifts, manlifts, boom trucks, generators and air compressors with certified operators.",
+      ar: "رافعات، فوركلفت، مان لفت، شاحنات بوم، مولدات وضواغط هواء مع مشغلين معتمدين.",
+    },
   },
   {
     icon: Shield,
-    title: "HSE & Safety Support",
-    description:
-      "Certified safety officers, permit management, site supervision, toolbox talks, safety compliance and accident-free operations.",
+    title: { en: "HSE & Safety Support", ar: "دعم السلامة والصحة المهنية" },
+    description: {
+      en: "Certified safety officers, permit management, site supervision, toolbox talks and compliance.",
+      ar: "مسؤولو سلامة معتمدون، إدارة التصاريح، إشراف موقعي، اجتماعات السلامة والالتزام.",
+    },
   },
 ]
 
 export function ServicesSection() {
+  const { lang } = useLanguage()
+
   return (
-    <section className="py-20 bg-white text-black">
+    <section className="py-20 md:py-28 bg-primary">
       <div className="container mx-auto px-6">
-        <div className="text-center mb-12">
-          <div className="text-[#d4af37] text-sm font-semibold uppercase tracking-wider mb-3">
-            OUR CORE SERVICES
+        {/* Section header - Nesma style */}
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-16">
+          <div className="max-w-2xl">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="h-px w-12 bg-accent" />
+              <span className="text-xs font-semibold tracking-[0.25em] text-accent uppercase">
+                {pickLang(lang, { en: "Our Services", ar: "خدماتنا" })}
+              </span>
+            </div>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
+              {pickLang(lang, { en: "A Dynamic Network of", ar: "شبكة ديناميكية من" })}{" "}
+              <br className="hidden lg:block" />
+              <span className="text-accent">{pickLang(lang, { en: "Expertise & Solutions", ar: "الخبرات والحلول" })}</span>
+            </h2>
+            <p className="text-white/70 text-lg">
+              {pickLang(lang, {
+                en: "Complete manpower and industrial contracting solutions for oil & gas, petrochemical, construction and maintenance projects across Saudi Arabia.",
+                ar: "حلول متكاملة للقوى العاملة والمقاولات الصناعية لمشاريع النفط والغاز والبتروكيماويات والإنشاءات والصيانة في أنحاء المملكة.",
+              })}
+            </p>
           </div>
 
-          <h2 className="text-4xl md:text-5xl font-bold text-black mb-4">
-            Complete Manpower & Industrial Solutions
-          </h2>
-
-          <div className="w-16 h-1 bg-[#d4af37] mx-auto mb-4" />
-
-          <p className="text-black/70 text-lg max-w-3xl mx-auto">
-            Power Solid supplies certified manpower and delivers industrial
-            contracting solutions for oil & gas, petrochemical, construction
-            and maintenance projects across Saudi Arabia.
-          </p>
+          <Link 
+            href="/services"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors group"
+          >
+            {pickLang(lang, { en: "View All Services", ar: "عرض جميع الخدمات" })}
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Services grid - Nesma style */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 border border-white/10 bg-background/95 rounded-3xl overflow-hidden">
           {services.map((service, index) => (
-            <Card
+            <div
               key={index}
-              className="group bg-white border border-black/10 hover:border-[#d4af37]/60 hover:shadow-xl transition-all"
+              className="group p-8 border-b border-r border-border hover:bg-secondary transition-all relative"
             >
-              <CardContent className="p-6">
-                <div className="w-14 h-14 bg-[#d4af37] rounded-xl flex items-center justify-center mb-4">
-                  <service.icon className="w-7 h-7 text-black" strokeWidth={1.5} />
-                </div>
+              {/* Icon */}
+              <div className="w-14 h-14 bg-primary flex items-center justify-center mb-6 group-hover:bg-accent transition-colors">
+                <service.icon className="w-7 h-7 text-white" strokeWidth={1.5} />
+              </div>
 
-                <h3 className="text-xl font-bold text-black mb-3">
-                  {service.title}
-                </h3>
+              {/* Title */}
+              <h3 className="text-xl font-bold text-foreground mb-3 group-hover:text-primary">
+                {pickLang(lang, service.title)}
+              </h3>
 
-                <p className="text-black/70 mb-4 leading-relaxed">
-                  {service.description}
-                </p>
+              {/* Description */}
+              <p className="text-foreground/60 mb-6 leading-relaxed">
+                {pickLang(lang, service.description)}
+              </p>
 
-                <Link
-                  href="/services"
-                  className="inline-flex items-center text-black font-medium text-sm hover:text-[#d4af37] group-hover:gap-2 transition-all"
-                >
-                  View Details
-                  <ArrowRight className="ml-1 w-4 h-4" />
-                </Link>
-              </CardContent>
-            </Card>
+              {/* Learn more link */}
+              <Link
+                href="/services"
+                className="inline-flex items-center text-sm font-medium text-primary hover:text-accent group-hover:gap-2 transition-all"
+              >
+                {pickLang(lang, { en: "Learn More", ar: "اعرف المزيد" })}
+                <ArrowRight className="ml-1 w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </Link>
+
+              {/* Accent line on hover */}
+              <div className="absolute bottom-0 left-0 w-0 h-0.5 bg-accent group-hover:w-full transition-all duration-500" />
+            </div>
           ))}
         </div>
       </div>

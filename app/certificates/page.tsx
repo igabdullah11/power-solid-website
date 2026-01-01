@@ -1,3 +1,5 @@
+"use client"
+
 // import Header from "@/components/header"
 // import Footer from "@/components/footer"
 // import { Award, Download } from "lucide-react"
@@ -190,42 +192,64 @@
 // }
 import Header from "@/components/header"
 import Footer from "@/components/footer"
-import { Award, Download } from "lucide-react"
+import { Award } from "lucide-react"
+import { useLanguage } from "@/components/language-provider"
+import { pickLang } from "@/lib/i18n"
 
 export default function CertificatesPage() {
+  const { lang } = useLanguage()
+
   const isoCertificates = [
     {
-      title: "ISO 9001:2015 (Planned)",
-      category: "Quality Management System",
-      issuer: "International Organization for Standardization",
-      year: "Implementation in Progress",
+      title: { en: "ISO 9001:2015 (Planned)", ar: "ISO 9001:2015 (قيد التنفيذ)" },
+      category: { en: "Quality Management System", ar: "نظام إدارة الجودة" },
+      issuer: {
+        en: "International Organization for Standardization",
+        ar: "المنظمة الدولية للتوحيد القياسي",
+      },
+      year: { en: "Implementation in Progress", ar: "جارٍ التنفيذ" },
     },
     {
-      title: "ISO 45001:2018 (Planned)",
-      category: "Occupational Health & Safety",
-      issuer: "International Organization for Standardization",
-      year: "Implementation in Progress",
+      title: { en: "ISO 45001:2018 (Planned)", ar: "ISO 45001:2018 (قيد التنفيذ)" },
+      category: { en: "Occupational Health & Safety", ar: "الصحة والسلامة المهنية" },
+      issuer: {
+        en: "International Organization for Standardization",
+        ar: "المنظمة الدولية للتوحيد القياسي",
+      },
+      year: { en: "Implementation in Progress", ar: "جارٍ التنفيذ" },
     },
     {
-      title: "ISO 14001:2015 (Planned)",
-      category: "Environmental Management System",
-      issuer: "International Organization for Standardization",
-      year: "Implementation in Progress",
+      title: { en: "ISO 14001:2015 (Planned)", ar: "ISO 14001:2015 (قيد التنفيذ)" },
+      category: { en: "Environmental Management System", ar: "نظام الإدارة البيئية" },
+      issuer: {
+        en: "International Organization for Standardization",
+        ar: "المنظمة الدولية للتوحيد القياسي",
+      },
+      year: { en: "Implementation in Progress", ar: "جارٍ التنفيذ" },
     },
   ]
 
   const accreditations = [
     {
-      title: "Saudi Labor Law Compliance",
-      description: "Fully compliant with Saudi manpower & labor regulations",
+      title: { en: "Saudi Labor Law Compliance", ar: "الامتثال لنظام العمل السعودي" },
+      description: {
+        en: "Fully compliant with Saudi manpower & labor regulations",
+        ar: "التزام كامل بأنظمة ولوائح القوى العاملة والعمل في المملكة",
+      },
     },
     {
-      title: "HSE Safety Standards",
-      description: "Strict site safety rules and toolbox talk procedures",
+      title: { en: "HSE Safety Standards", ar: "معايير السلامة (HSE)" },
+      description: {
+        en: "Strict site safety rules and toolbox talk procedures",
+        ar: "تطبيق صارم لقواعد السلامة وإجراءات اجتماعات السلامة اليومية",
+      },
     },
     {
-      title: "Industrial Site Experience",
-      description: "Experience working under Aramco & SABIC approved contractors",
+      title: { en: "Industrial Site Experience", ar: "خبرة في المواقع الصناعية" },
+      description: {
+        en: "Experience working under Aramco & SABIC approved contractors",
+        ar: "خبرة عمل تحت مقاولين معتمدين لدى أرامكو وسابك",
+      },
     },
   ]
 
@@ -234,11 +258,16 @@ export default function CertificatesPage() {
       <Header />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-gray-900 via-black to-gray-900 py-20 text-white">
+      <section className="bg-gradient-to-r from-gray-900 via-black to-gray-900 pt-36 pb-28 text-white">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="mb-4 text-4xl font-bold md:text-5xl">Certifications & Compliance</h1>
+          <h1 className="mb-4 text-4xl font-bold md:text-5xl">
+            {pickLang(lang, { en: "Certifications & Compliance", ar: "الشهادات والامتثال" })}
+          </h1>
           <p className="text-lg text-gray-300">
-            Standards, safety compliance & workforce credibility
+            {pickLang(lang, {
+              en: "Standards, safety compliance & workforce credibility",
+              ar: "المعايير والالتزام بالسلامة ومصداقية القوى العاملة",
+            })}
           </p>
         </div>
       </section>
@@ -257,19 +286,9 @@ export default function CertificatesPage() {
                   <div className="mb-4 inline-flex rounded-lg bg-[#d4af37] p-3">
                     <Award className="h-6 w-6 text-white" />
                   </div>
-                  <h3 className="mb-2 text-xl font-bold text-gray-900">{cert.title}</h3>
-                  <p className="mb-2 font-semibold text-[#d4af37]">{cert.category}</p>
-                  <p className="mb-4 text-sm text-gray-600">{cert.issuer}</p>
-                  <div className="flex items-center justify-between border-t border-gray-100 pt-4">
-                    <span className="text-sm text-gray-500">{cert.year}</span>
-                    <button
-                      disabled
-                      className="text-gray-300 cursor-not-allowed"
-                      title="Available upon request"
-                    >
-                      <Download className="h-5 w-5" />
-                    </button>
-                  </div>
+                  <h3 className="mb-2 text-xl font-bold text-gray-900">{pickLang(lang, cert.title)}</h3>
+                  <p className="mb-2 font-semibold text-[#d4af37]">{pickLang(lang, cert.category)}</p>
+                  <p className="mb-4 text-sm text-gray-600">{pickLang(lang, cert.issuer)}</p>
                 </div>
               </div>
             ))}
@@ -282,10 +301,13 @@ export default function CertificatesPage() {
         <div className="container mx-auto px-4">
           <div className="mb-12 text-center">
             <h2 className="mb-4 text-3xl font-bold md:text-4xl">
-              Workforce Compliance & Safety
+              {pickLang(lang, { en: "Workforce Compliance & Safety", ar: "امتثال القوى العاملة والسلامة" })}
             </h2>
             <p className="text-gray-600">
-              Our manpower operates under strict Saudi industrial standards
+              {pickLang(lang, {
+                en: "Our manpower operates under strict Saudi industrial standards",
+                ar: "تعمل كوادرنا وفق معايير صناعية صارمة في المملكة",
+              })}
             </p>
           </div>
 
@@ -298,8 +320,8 @@ export default function CertificatesPage() {
                 <div className="mb-4 inline-flex h-24 w-24 items-center justify-center rounded-full bg-[#d4af37]">
                   <Award className="h-12 w-12 text-white" />
                 </div>
-                <h3 className="mb-2 text-xl font-bold text-gray-900">{accred.title}</h3>
-                <p className="text-gray-600">{accred.description}</p>
+                <h3 className="mb-2 text-xl font-bold text-gray-900">{pickLang(lang, accred.title)}</h3>
+                <p className="text-gray-600">{pickLang(lang, accred.description)}</p>
               </div>
             ))}
           </div>
@@ -311,17 +333,18 @@ export default function CertificatesPage() {
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-4xl text-center">
             <h2 className="mb-6 text-3xl font-bold md:text-4xl">
-              Why Clients Trust Power Solid?
+              {pickLang(lang, { en: "Why Clients Trust Power Solid?", ar: "لماذا يثق العملاء بباور سوليد؟" })}
             </h2>
             <p className="mb-8 text-lg leading-relaxed text-gray-600">
-              Our certified workforce background, Saudi compliance, safety training
-              and industrial site experience make us a trusted manpower support
-              partner for shutdown, maintenance and infrastructure projects.
+              {pickLang(lang, {
+                en: "Our certified workforce background, Saudi compliance, safety training and industrial site experience make us a trusted manpower support partner for shutdown, maintenance and infrastructure projects.",
+                ar: "خبرة كوادرنا المعتمدة والامتثال للأنظمة في المملكة والتدريب على السلامة وتجربة العمل في المواقع الصناعية تجعلنا شريكاً موثوقاً لدعم مشاريع الإيقاف والصيانة والبنية التحتية.",
+              })}
             </p>
             <div className="flex flex-wrap items-center justify-center gap-4">
-              <span className="rounded-full bg-[#f4e5b1] px-6 py-3 font-semibold text-gray-800">Certified Workforce</span>
-              <span className="rounded-full bg-[#f4e5b1] px-6 py-3 font-semibold text-gray-800">Safety Driven</span>
-              <span className="rounded-full bg-[#f4e5b1] px-6 py-3 font-semibold text-gray-800">Site Proven</span>
+              <span className="rounded-full bg-[#f4e5b1] px-6 py-3 font-semibold text-gray-800">{pickLang(lang, { en: "Certified Workforce", ar: "عمالة معتمدة" })}</span>
+              <span className="rounded-full bg-[#f4e5b1] px-6 py-3 font-semibold text-gray-800">{pickLang(lang, { en: "Safety Driven", ar: "تركيز على السلامة" })}</span>
+              <span className="rounded-full bg-[#f4e5b1] px-6 py-3 font-semibold text-gray-800">{pickLang(lang, { en: "Site Proven", ar: "خبرة ميدانية" })}</span>
             </div>
           </div>
         </div>

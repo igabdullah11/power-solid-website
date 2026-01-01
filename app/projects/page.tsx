@@ -370,97 +370,163 @@ import Footer from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
 import { useState } from "react"
+import { useLanguage } from "@/components/language-provider"
+import { pickLang } from "@/lib/i18n"
 
-const projects = [
+type CategoryKey =
+  | "all"
+  | "shutdown"
+  | "oil_gas"
+  | "power_utilities"
+  | "infrastructure"
+  | "maintenance"
+  | "commercial"
+
+const categories: Array<{ key: CategoryKey; label: { en: string; ar: string } }> = [
+  { key: "all", label: { en: "All", ar: "الكل" } },
+  { key: "shutdown", label: { en: "Shutdown", ar: "الإيقاف" } },
+  { key: "oil_gas", label: { en: "Oil & Gas", ar: "النفط والغاز" } },
+  { key: "power_utilities", label: { en: "Power & Utilities", ar: "الطاقة والمرافق" } },
+  { key: "infrastructure", label: { en: "Infrastructure", ar: "البنية التحتية" } },
+  { key: "maintenance", label: { en: "Maintenance", ar: "الصيانة" } },
+  { key: "commercial", label: { en: "Commercial", ar: "تجاري" } },
+]
+
+const projects: Array<{
+  id: number
+  title: { en: string; ar: string }
+  category: CategoryKey
+  client: { en: string; ar: string }
+  location: { en: string; ar: string }
+  year: string
+  description: { en: string; ar: string }
+  image: string
+  scope: Array<{ en: string; ar: string }>
+}> = [
   {
     id: 1,
-    title: "Petrochemical Plant Shutdown Manpower",
-    category: "Shutdown",
-    client: "SABIC Contractor (Subcontract)",
-    location: "Jubail Industrial City",
+    title: {
+      en: "Petrochemical Plant Shutdown Manpower",
+      ar: "توريد عمالة لإيقاف مصنع بتروكيماويات",
+    },
+    category: "shutdown",
+    client: { en: "SABIC Contractor (Subcontract)", ar: "مقاول سابك (مقاول فرعي)" },
+    location: { en: "Jubail Industrial City", ar: "مدينة الجبيل الصناعية" },
     year: "2023",
-    description:
-      "Supply of certified Riggers, WPRs, Firewatchers and Safety Officers for a major plant shutdown and turnaround operation.",
+    description: {
+      en: "Supply of certified Riggers, WPRs, Firewatchers and Safety Officers for a major plant shutdown and turnaround operation.",
+      ar: "توريد رافعات معتمدة ومستلمي تصاريح العمل (WPR) ومراقبي الحريق ومسؤولي السلامة لدعم إيقاف وتوقف رئيسي للمصنع.",
+    },
     image: "/industrial-plant-maintenance-workers.jpg",
-    scope: ["Riggers I, II, III", "WPR", "Firewatch", "Safety Officers"],
+    scope: [
+      { en: "Riggers I, II, III", ar: "رافعات I وII وIII" },
+      { en: "WPR", ar: "WPR" },
+      { en: "Firewatch", ar: "مراقب حريق" },
+      { en: "Safety Officers", ar: "مسؤولو السلامة" },
+    ],
   },
   {
     id: 2,
-    title: "Oil & Gas Pipeline Maintenance Workforce",
-    category: "Oil & Gas",
-    client: "Aramco Approved Contractor",
-    location: "Eastern Province, Saudi Arabia",
+    title: {
+      en: "Oil & Gas Pipeline Maintenance Workforce",
+      ar: "عمالة صيانة خطوط أنابيب النفط والغاز",
+    },
+    category: "oil_gas",
+    client: { en: "Aramco Approved Contractor", ar: "مقاول معتمد لدى أرامكو" },
+    location: { en: "Eastern Province, Saudi Arabia", ar: "المنطقة الشرقية، المملكة العربية السعودية" },
     year: "2023",
-    description:
-      "Provision of skilled mechanical manpower for pipeline maintenance, welding assistance, and safety supervision.",
+    description: {
+      en: "Provision of skilled mechanical manpower for pipeline maintenance, welding assistance, and safety supervision.",
+      ar: "توفير عمالة ميكانيكية ماهرة لصيانة خطوط الأنابيب، دعم أعمال اللحام والإشراف على السلامة.",
+    },
     image: "/oil-pipeline-construction-saudi-arabia.jpg",
-    scope: ["Mechanical helpers", "Safety Officers", "Welders", "Riggers"],
+    scope: [
+      { en: "Mechanical helpers", ar: "مساعدون ميكانيكيون" },
+      { en: "Safety Officers", ar: "مسؤولو السلامة" },
+      { en: "Welders", ar: "لحّامون" },
+      { en: "Riggers", ar: "رافعات" },
+    ],
   },
   {
     id: 3,
-    title: "Power Substation Maintenance Support",
-    category: "Power & Utilities",
-    client: "Power Sector Contractor",
-    location: "Riyadh, Saudi Arabia",
+    title: { en: "Power Substation Maintenance Support", ar: "دعم صيانة محطة كهرباء فرعية" },
+    category: "power_utilities",
+    client: { en: "Power Sector Contractor", ar: "مقاول قطاع الطاقة" },
+    location: { en: "Riyadh, Saudi Arabia", ar: "الرياض، المملكة العربية السعودية" },
     year: "2022",
-    description:
-      "Supply of electrical helpers, safety staff and WPRs for substation testing and preventive maintenance activities.",
+    description: {
+      en: "Supply of electrical helpers, safety staff and WPRs for substation testing and preventive maintenance activities.",
+      ar: "توريد مساعدين كهربائيين وطاقم سلامة ومستلمي تصاريح العمل (WPR) لاختبارات المحطة وأعمال الصيانة الوقائية.",
+    },
     image: "/electrical-substation-construction.jpg",
-    scope: ["Electrical Helpers", "WPR", "Safety Officers"],
+    scope: [
+      { en: "Electrical Helpers", ar: "مساعدون كهربائيون" },
+      { en: "WPR", ar: "WPR" },
+      { en: "Safety Officers", ar: "مسؤولو السلامة" },
+    ],
   },
   {
     id: 4,
-    title: "Industrial Infrastructure Labor Supply",
-    category: "Infrastructure",
-    client: "Government Infrastructure Contractor",
-    location: "Riyadh, Saudi Arabia",
+    title: { en: "Industrial Infrastructure Labor Supply", ar: "توريد عمالة للبنية التحتية الصناعية" },
+    category: "infrastructure",
+    client: { en: "Government Infrastructure Contractor", ar: "مقاول بنية تحتية حكومي" },
+    location: { en: "Riyadh, Saudi Arabia", ar: "الرياض، المملكة العربية السعودية" },
     year: "2022",
-    description:
-      "Provision of general labor, riggers and safety manpower for major road and utility development works.",
+    description: {
+      en: "Provision of general labor, riggers and safety manpower for major road and utility development works.",
+      ar: "توفير عمالة عامة ورافعات وطاقم سلامة لمشاريع تطوير الطرق والمرافق الرئيسية.",
+    },
     image: "/modern-infrastructure-construction-saudi-arabia.jpg",
-    scope: ["Helpers", "Riggers", "Safety Officers"],
+    scope: [
+      { en: "Helpers", ar: "مساعدون" },
+      { en: "Riggers", ar: "رافعات" },
+      { en: "Safety Officers", ar: "مسؤولو السلامة" },
+    ],
   },
   {
     id: 5,
-    title: "Refinery Turnaround Safety & Shutdown Crew",
-    category: "Maintenance",
-    client: "Refinery Maintenance Contractor",
-    location: "Eastern Province",
+    title: { en: "Refinery Turnaround Safety & Shutdown Crew", ar: "فرق سلامة وإيقاف لمصفاة" },
+    category: "maintenance",
+    client: { en: "Refinery Maintenance Contractor", ar: "مقاول صيانة مصفاة" },
+    location: { en: "Eastern Province", ar: "المنطقة الشرقية" },
     year: "2023",
-    description:
-      "Deployment of plant shutdown safety staff, firewatch teams and riggers for refinery turnaround activities.",
+    description: {
+      en: "Deployment of plant shutdown safety staff, firewatch teams and riggers for refinery turnaround activities.",
+      ar: "تجهيز طاقم سلامة الإيقاف وفرق مراقبة الحريق ورافعات لدعم أعمال التوقف في المصفاة.",
+    },
     image: "/refinery-turnaround-maintenance.jpg",
-    scope: ["Firewatch", "Safety Officers", "Riggers"],
+    scope: [
+      { en: "Firewatch", ar: "مراقب حريق" },
+      { en: "Safety Officers", ar: "مسؤولو السلامة" },
+      { en: "Riggers", ar: "رافعات" },
+    ],
   },
   {
     id: 6,
-    title: "Commercial Project Manpower Supply",
-    category: "Commercial",
-    client: "Private Developer",
-    location: "Jeddah, Saudi Arabia",
+    title: { en: "Commercial Project Manpower Supply", ar: "توريد عمالة لمشروع تجاري" },
+    category: "commercial",
+    client: { en: "Private Developer", ar: "مطور خاص" },
+    location: { en: "Jeddah, Saudi Arabia", ar: "جدة، المملكة العربية السعودية" },
     year: "2021",
-    description:
-      "Supply of civil helpers, scaffolding support crew and safety manpower for commercial building construction.",
+    description: {
+      en: "Supply of civil helpers, scaffolding support crew and safety manpower for commercial building construction.",
+      ar: "توريد مساعدين مدنيين وفريق دعم السقالات وطاقم سلامة لأعمال إنشاء مبنى تجاري.",
+    },
     image: "/modern-commercial-construction.png",
-    scope: ["Helpers", "Scaffolders", "Safety Officers"],
+    scope: [
+      { en: "Helpers", ar: "مساعدون" },
+      { en: "Scaffolders", ar: "فنيّو سقالات" },
+      { en: "Safety Officers", ar: "مسؤولو السلامة" },
+    ],
   },
 ]
 
-const categories = [
-  "All",
-  "Shutdown",
-  "Oil & Gas",
-  "Power & Utilities",
-  "Infrastructure",
-  "Maintenance",
-  "Commercial",
-]
-
 export default function ProjectsPage() {
-  const [activeFilter, setActiveFilter] = useState("All")
+  const { lang } = useLanguage()
+  const [activeFilter, setActiveFilter] = useState<CategoryKey>("all")
 
   const filteredProjects =
-    activeFilter === "All"
+    activeFilter === "all"
       ? projects
       : projects.filter((project) => project.category === activeFilter)
 
@@ -469,7 +535,7 @@ export default function ProjectsPage() {
       <Header />
 
       {/* Hero Section */}
-      <section className="relative bg-black text-white py-24">
+      <section className="relative bg-black text-white pt-40 pb-32">
         <div className="absolute inset-0 bg-black/70 z-10" />
         <Image
           src="/construction-projects-overview-aerial.jpg"
@@ -480,11 +546,13 @@ export default function ProjectsPage() {
         />
         <div className="container mx-auto px-4 relative z-20 text-center">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-            Our Manpower Projects
+            {pickLang(lang, { en: "Our Manpower Projects", ar: "مشاريعنا في القوى العاملة" })}
           </h1>
           <p className="text-lg md:text-xl text-gray-200 max-w-3xl mx-auto">
-            Shutdown manpower, industrial maintenance workforce and safety
-            deployment across Saudi Arabia.
+            {pickLang(lang, {
+              en: "Shutdown manpower, industrial maintenance workforce and safety deployment across Saudi Arabia.",
+              ar: "توريد عمالة الإيقاف، عمالة الصيانة الصناعية وتجهيز كوادر السلامة في أنحاء المملكة.",
+            })}
           </p>
         </div>
       </section>
@@ -495,16 +563,16 @@ export default function ProjectsPage() {
           <div className="flex flex-wrap gap-3 justify-center">
             {categories.map((category) => (
               <Button
-                key={category}
-                onClick={() => setActiveFilter(category)}
-                variant={category === activeFilter ? "default" : "outline"}
+                key={category.key}
+                onClick={() => setActiveFilter(category.key)}
+                variant={category.key === activeFilter ? "default" : "outline"}
                 className={
-                  category === activeFilter
+                  category.key === activeFilter
                     ? "bg-[#d4af37] hover:bg-[#c19b2e] text-black"
                     : "hover:border-[#d4af37] hover:text-[#d4af37]"
                 }
               >
-                {category}
+                {pickLang(lang, category.label)}
               </Button>
             ))}
           </div>
@@ -523,7 +591,7 @@ export default function ProjectsPage() {
                 <div className="relative h-60">
                   <Image
                     src={project.image}
-                    alt={project.title}
+                    alt={pickLang(lang, project.title)}
                     fill
                     className="object-cover"
                   />
@@ -531,23 +599,26 @@ export default function ProjectsPage() {
 
                 <div className="p-6">
                   <span className="text-sm font-semibold text-[#d4af37]">
-                    {project.category}
+                    {pickLang(
+                      lang,
+                      categories.find((c) => c.key === project.category)?.label ?? { en: "", ar: "" },
+                    )}
                   </span>
 
                   <h3 className="text-xl font-bold mt-2 mb-2">
-                    {project.title}
+                    {pickLang(lang, project.title)}
                   </h3>
 
                   <p className="text-gray-600 text-sm mb-3">
-                    {project.description}
+                    {pickLang(lang, project.description)}
                   </p>
 
                   <div className="text-sm text-gray-500 mb-3">
-                    <strong>Client:</strong> {project.client}
+                    <strong>{pickLang(lang, { en: "Client:", ar: "العميل:" })}</strong> {pickLang(lang, project.client)}
                     <br />
-                    <strong>Location:</strong> {project.location}
+                    <strong>{pickLang(lang, { en: "Location:", ar: "الموقع:" })}</strong> {pickLang(lang, project.location)}
                     <br />
-                    <strong>Year:</strong> {project.year}
+                    <strong>{pickLang(lang, { en: "Year:", ar: "السنة:" })}</strong> {project.year}
                   </div>
 
                   <div className="flex flex-wrap gap-2">
@@ -556,7 +627,7 @@ export default function ProjectsPage() {
                         key={index}
                         className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded"
                       >
-                        {item}
+                        {pickLang(lang, item)}
                       </span>
                     ))}
                   </div>
@@ -571,14 +642,16 @@ export default function ProjectsPage() {
       <section className="py-16 bg-black text-white">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Need Manpower for Your Next Project?
+            {pickLang(lang, { en: "Need Manpower for Your Next Project?", ar: "هل تحتاج إلى عمالة لمشروعك القادم؟" })}
           </h2>
           <p className="text-gray-300 mb-8 max-w-2xl mx-auto">
-            Get in touch with Power Solid today for certified manpower supply,
-            shutdown support and safety workforce.
+            {pickLang(lang, {
+              en: "Get in touch with Power Solid today for certified manpower supply, shutdown support and safety workforce.",
+              ar: "تواصل مع باور سوليد اليوم لتوريد عمالة معتمدة، دعم الإيقاف والتوقفات وكوادر السلامة.",
+            })}
           </p>
           <Button className="bg-[#d4af37] hover:bg-[#c19b2e] text-black font-semibold px-8 py-6 text-lg">
-            Request Manpower
+            {pickLang(lang, { en: "Request Manpower", ar: "اطلب عمالة" })}
           </Button>
         </div>
       </section>

@@ -281,10 +281,15 @@ import type React from "react"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
 import { Phone, Mail, MapPin, Send } from "lucide-react"
+import Image from "next/image"
 import { useState } from "react"
 import { sendContactEmail } from "@/app/actions/send-email"
+import { useLanguage } from "@/components/language-provider"
+import { pickLang } from "@/lib/i18n"
 
 export default function ContactUsPage() {
+  const { lang } = useLanguage()
+
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -301,7 +306,7 @@ export default function ContactUsPage() {
     setSubmitStatus(null)
 
     try {
-      const result = await sendContactEmail(formData)
+      const result = await sendContactEmail(formData, lang)
 
       if (result.success) {
         setSubmitStatus({ type: "success", message: result.message })
@@ -318,7 +323,10 @@ export default function ContactUsPage() {
     } catch (error) {
       setSubmitStatus({
         type: "error",
-        message: "An unexpected error occurred. Please contact us directly at info@psc-intl.com",
+        message: pickLang(lang, {
+          en: "An unexpected error occurred. Please contact us directly at info@psc-intl.com",
+          ar: "حدث خطأ غير متوقع. يرجى التواصل معنا مباشرة عبر info@psc-intl.com",
+        }),
       })
     } finally {
       setIsSubmitting(false)
@@ -334,11 +342,21 @@ export default function ContactUsPage() {
       <Header />
 
       {/* ✅ HERO SECTION (MANPOWER OPTIMIZED) */}
-      <section className="bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white py-24 md:py-32">
-        <div className="container mx-auto px-6 text-center">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">Request Manpower</h1>
+      <section className="relative bg-black text-white pt-40 pb-32 md:pt-48 md:pb-40">
+        <div className="absolute inset-0 z-0">
+          <Image src="/images/construction-site2.jpg" alt="" fill priority className="object-cover" />
+          <div className="absolute inset-0 bg-black/70" />
+        </div>
+
+        <div className="container mx-auto px-6 text-center relative z-10">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6">
+            {pickLang(lang, { en: "Request Manpower", ar: "طلب قوى عاملة" })}
+          </h1>
           <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
-            We provide certified manpower, shutdown teams and safety workforce across Saudi Arabia
+            {pickLang(lang, {
+              en: "We provide certified manpower, shutdown teams and safety workforce across Saudi Arabia",
+              ar: "نوفر قوى عاملة معتمدة وفرق إيقاف وكوادر سلامة في أنحاء المملكة",
+            })}
           </p>
         </div>
       </section>
@@ -349,14 +367,16 @@ export default function ContactUsPage() {
           <div className="grid lg:grid-cols-3 gap-8 md:gap-12">
             {/* CONTACT INFO */}
             <div className="lg:col-span-1 space-y-6 md:space-y-8">
-              <h2 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8">Contact Information</h2>
+              <h2 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8">
+                {pickLang(lang, { en: "Contact Information", ar: "معلومات التواصل" })}
+              </h2>
 
               <div className="flex items-start gap-4">
                 <div className="bg-yellow-50 p-4 rounded-lg">
                   <Phone className="w-6 h-6 text-[#d4af37]" />
                 </div>
                 <div>
-                  <h3 className="font-bold mb-1">Phone</h3>
+                  <h3 className="font-bold mb-1">{pickLang(lang, { en: "Phone", ar: "الهاتف" })}</h3>
                   <a href="tel:+966551429094" className="text-gray-600 hover:text-[#d4af37]">
                     +966 55 142 9094
                   </a>
@@ -368,7 +388,7 @@ export default function ContactUsPage() {
                   <Mail className="w-6 h-6 text-[#d4af37]" />
                 </div>
                 <div>
-                  <h3 className="font-bold mb-1">Email</h3>
+                  <h3 className="font-bold mb-1">{pickLang(lang, { en: "Email", ar: "البريد الإلكتروني" })}</h3>
                   <a href="mailto:info@psc-intl.com" className="text-gray-600 hover:text-[#d4af37]">
                     info@psc-intl.com
                   </a>
@@ -380,18 +400,25 @@ export default function ContactUsPage() {
                   <MapPin className="w-6 h-6 text-[#d4af37]" />
                 </div>
                 <div>
-                  <h3 className="font-bold mb-1">Office Address</h3>
+                  <h3 className="font-bold mb-1">{pickLang(lang, { en: "Office Address", ar: "عنوان المكتب" })}</h3>
                   <p className="text-gray-600">
-                    Jubail Industrial City, Eastern Province, Saudi Arabia
+                    {pickLang(lang, {
+                      en: "Jubail Industrial City, Eastern Province, Saudi Arabia",
+                      ar: "مدينة الجبيل الصناعية، المنطقة الشرقية، المملكة العربية السعودية",
+                    })}
                   </p>
                 </div>
               </div>
 
               <div className="bg-yellow-50 p-6 rounded-lg mt-8">
-                <h3 className="font-bold mb-4">Business Hours</h3>
-                <p className="text-sm">Monday – Friday: 8:00 AM – 6:00 PM</p>
-                <p className="text-sm">Saturday: 9:00 AM – 4:00 PM</p>
-                <p className="text-sm">Sunday: Closed</p>
+                <h3 className="font-bold mb-4">{pickLang(lang, { en: "Business Hours", ar: "ساعات العمل" })}</h3>
+                <p className="text-sm">
+                  {pickLang(lang, { en: "Monday – Friday: 8:00 AM – 6:00 PM", ar: "الاثنين – الجمعة: 8:00 صباحاً – 6:00 مساءً" })}
+                </p>
+                <p className="text-sm">
+                  {pickLang(lang, { en: "Saturday: 9:00 AM – 4:00 PM", ar: "السبت: 9:00 صباحاً – 4:00 مساءً" })}
+                </p>
+                <p className="text-sm">{pickLang(lang, { en: "Sunday: Closed", ar: "الأحد: مغلق" })}</p>
               </div>
             </div>
 
@@ -416,7 +443,7 @@ export default function ContactUsPage() {
                     name="fullName"
                     value={formData.fullName}
                     onChange={handleChange}
-                    placeholder="Full Name"
+                    placeholder={pickLang(lang, { en: "Full Name", ar: "الاسم الكامل" })}
                     className="w-full px-4 py-3 border rounded-lg"
                     required
                   />
@@ -426,7 +453,7 @@ export default function ContactUsPage() {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    placeholder="Email Address"
+                    placeholder={pickLang(lang, { en: "Email Address", ar: "البريد الإلكتروني" })}
                     className="w-full px-4 py-3 border rounded-lg"
                     required
                   />
@@ -448,7 +475,10 @@ export default function ContactUsPage() {
                     name="subject"
                     value={formData.subject}
                     onChange={handleChange}
-                    placeholder="Manpower requirement / Shutdown support"
+                    placeholder={pickLang(lang, {
+                      en: "Manpower requirement / Shutdown support",
+                      ar: "احتياج عمالة / دعم الإيقاف",
+                    })}
                     className="w-full px-4 py-3 border rounded-lg"
                     required
                   />
@@ -459,7 +489,10 @@ export default function ContactUsPage() {
                   value={formData.message}
                   onChange={handleChange}
                   rows={6}
-                  placeholder="Mention required manpower (Riggers, WPR, Safety, Helpers, etc.)"
+                  placeholder={pickLang(lang, {
+                    en: "Mention required manpower (Riggers, WPR, Safety, Helpers, etc.)",
+                    ar: "اذكر احتياج القوى العاملة (رافعات، WPR، سلامة، مساعدين، إلخ)",
+                  })}
                   className="w-full px-4 py-3 border rounded-lg"
                   required
                 />
@@ -470,7 +503,9 @@ export default function ContactUsPage() {
                   className="w-full bg-[#d4af37] text-black font-bold py-4 rounded-lg flex items-center justify-center gap-2"
                 >
                   <Send className="w-5 h-5" />
-                  {isSubmitting ? "Sending..." : "Send Manpower Request"}
+                  {isSubmitting
+                    ? pickLang(lang, { en: "Sending...", ar: "جارٍ الإرسال..." })
+                    : pickLang(lang, { en: "Send Manpower Request", ar: "إرسال طلب القوى العاملة" })}
                 </button>
               </form>
             </div>
@@ -493,7 +528,9 @@ export default function ContactUsPage() {
 
       {/* ✅ FINAL CTA */}
       <section className="py-20 bg-gray-50 text-center">
-        <h2 className="text-4xl font-bold mb-6">Need Certified Manpower for Your Site?</h2>
+        <h2 className="text-4xl font-bold mb-6">
+          {pickLang(lang, { en: "Need Certified Manpower for Your Site?", ar: "هل تحتاج إلى عمالة معتمدة لموقعك؟" })}
+        </h2>
         <a
           href="#"
           onClick={(e) => {
@@ -502,7 +539,7 @@ export default function ContactUsPage() {
           }}
           className="inline-block bg-[#d4af37] text-black font-bold py-4 px-10 rounded-lg"
         >
-          Contact Power Solid Now
+          {pickLang(lang, { en: "Contact Power Solid Now", ar: "تواصل مع باور سوليد الآن" })}
         </a>
       </section>
 

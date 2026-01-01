@@ -20,17 +20,17 @@ export default function Home() {
           <HeroSection />
         </section>
 
-        {/* WELCOME / INTRO SECTION (like PSC home) */}
-        <section id="about-preview">
-          <WelcomeSection />
-        </section>
-
-        {/* COMPANY STATS */}
+        {/* STATS SECTION - Nesma style "In Numbers" */}
         <section id="stats">
           <StatsSection />
         </section>
 
-        {/* SERVICES PREVIEW */}
+        {/* WELCOME / ABOUT PREVIEW */}
+        <section id="about-preview">
+          <WelcomeSection />
+        </section>
+
+        {/* SERVICES SECTION */}
         <section id="services">
           <ServicesSection />
         </section>
