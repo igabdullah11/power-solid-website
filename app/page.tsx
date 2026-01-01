@@ -4,7 +4,6 @@ import { HeroSection } from "@/components/hero-section"
 import { WelcomeSection } from "@/components/welcome-section"
 import { StatsSection } from "@/components/stats-section"
 import { ServicesSection } from "@/components/services-section"
-import { NewsSection } from "@/components/news-section"
 import { ClientsSection } from "@/components/clients-section"
 import { Footer } from "@/components/footer"
 
@@ -34,11 +33,6 @@ export default function Home() {
         {/* SERVICES SECTION */}
         <section id="services">
           <ServicesSection />
-        </section>
-
-        {/* NEWS SECTION - Nesma style */}
-        <section id="news">
-          <NewsSection />
         </section>
 
         {/* CLIENTS & PARTNERS */}

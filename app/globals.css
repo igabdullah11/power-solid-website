@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+html[dir="rtl"] body {
+  direction: rtl;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 :root {

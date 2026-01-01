@@ -1,15 +1,34 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
+import { useLanguage } from "@/components/language-provider"
+import { pickLang } from "@/lib/i18n"
 
 const stats = [
-  { value: "500+", label: "Skilled Workers", description: "Certified industrial manpower" },
-  { value: "200+", label: "Projects", description: "Completed across KSA" },
-  { value: "50+", label: "Active Clients", description: "Major contractors & operators" },
-  { value: "100%", label: "Safety Focus", description: "Compliance & mobilization" },
+  {
+    value: "500+",
+    label: { en: "Skilled Workers", ar: "عمالة ماهرة" },
+    description: { en: "Certified industrial manpower", ar: "قوى عاملة صناعية معتمدة" },
+  },
+  {
+    value: "200+",
+    label: { en: "Projects", ar: "مشاريع" },
+    description: { en: "Completed across KSA", ar: "منجزة في أنحاء المملكة" },
+  },
+  {
+    value: "50+",
+    label: { en: "Active Clients", ar: "عملاء نشطون" },
+    description: { en: "Major contractors & operators", ar: "مقاولون ومشغّلون رئيسيون" },
+  },
+  {
+    value: "100%",
+    label: { en: "Safety Focus", ar: "تركيز على السلامة" },
+    description: { en: "Compliance & mobilization", ar: "الامتثال والتعبئة" },
+  },
 ]
 
 export function StatsSection() {
+  const { lang } = useLanguage()
   const [isVisible, setIsVisible] = useState(false)
   const sectionRef = useRef<HTMLElement>(null)
 
@@ -33,7 +52,7 @@ export function StatsSection() {
   return (
     <section 
       ref={sectionRef}
-      className="relative bg-[#0f2847] py-16 md:py-24 overflow-hidden"
+      className="relative bg-primary py-16 md:py-24 overflow-hidden"
     >
       {/* Background pattern */}
       <div className="absolute inset-0 opacity-5">
@@ -46,14 +65,15 @@ export function StatsSection() {
         {/* Section header - Nesma style */}
         <div className="mb-12 md:mb-16">
           <div className="flex items-center gap-4 mb-4">
-            <div className="h-px w-12 bg-[#c9a227]" />
-            <span className="text-xs font-semibold tracking-[0.25em] text-[#c9a227] uppercase">
-              Power Solid in Numbers
+            <div className="h-px w-12 bg-accent" />
+            <span className="text-xs font-semibold tracking-[0.25em] text-accent uppercase">
+              {pickLang(lang, { en: "Power Solid in Numbers", ar: "باور سوليد بالأرقام" })}
             </span>
           </div>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white">
-            Delivering Excellence <br className="hidden md:block" />
-            <span className="text-[#c9a227]">Across Saudi Arabia</span>
+            {pickLang(lang, { en: "Delivering Excellence", ar: "نقدم التميز" })}{" "}
+            <br className="hidden md:block" />
+            <span className="text-accent">{pickLang(lang, { en: "Across Saudi Arabia", ar: "في أنحاء المملكة" })}</span>
           </h2>
         </div>
 
@@ -70,22 +90,22 @@ export function StatsSection() {
               style={{ transitionDelay: `${index * 150}ms` }}
             >
               {/* Large number */}
-              <div className="text-5xl md:text-6xl lg:text-7xl font-bold text-[#c9a227] mb-2 tracking-tight">
+              <div className="text-5xl md:text-6xl lg:text-7xl font-bold text-accent mb-2 tracking-tight">
                 {stat.value}
               </div>
               
               {/* Label */}
               <div className="text-lg md:text-xl font-semibold text-white mb-1">
-                {stat.label}
+                {pickLang(lang, stat.label)}
               </div>
               
               {/* Description */}
               <div className="text-sm text-white/60">
-                {stat.description}
+                {pickLang(lang, stat.description)}
               </div>
 
               {/* Bottom accent line */}
-              <div className="mt-4 h-0.5 w-12 bg-[#c9a227]/30 group-hover:w-full group-hover:bg-[#c9a227] transition-all duration-500" />
+              <div className="mt-4 h-0.5 w-12 bg-accent/30 group-hover:w-full group-hover:bg-accent transition-all duration-500" />
             </div>
           ))}
         </div>
@@ -94,15 +114,16 @@ export function StatsSection() {
         <div className="mt-12 md:mt-16 pt-8 border-t border-white/10">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <p className="text-white/70 max-w-2xl leading-relaxed">
-              Power Solid is a trusted manpower supply and industrial contracting company 
-              supporting oil & gas, petrochemical and construction projects across Saudi Arabia 
-              with certified, site-ready manpower for shutdowns and long-term operations.
+              {pickLang(lang, {
+                en: "Power Solid is a trusted manpower supply and industrial contracting company supporting oil & gas, petrochemical and construction projects across Saudi Arabia with certified, site-ready manpower for shutdowns and long-term operations.",
+                ar: "باور سوليد شركة موثوقة في توريد القوى العاملة والمقاولات الصناعية لدعم مشاريع النفط والغاز والبتروكيماويات والإنشاءات في المملكة العربية السعودية، بعمالة معتمدة وجاهزة للموقع لمشاريع الإيقاف والعمليات طويلة الأمد.",
+              })}
             </p>
             <a 
               href="/about-us"
-              className="inline-flex items-center gap-2 text-[#c9a227] font-medium hover:gap-4 transition-all group"
+              className="inline-flex items-center gap-2 text-accent font-medium hover:gap-4 transition-all group"
             >
-              Learn More About Us
+              {pickLang(lang, { en: "Learn More About Us", ar: "اعرف المزيد عنا" })}
               <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>

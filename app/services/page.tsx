@@ -1,3 +1,5 @@
+"use client"
+
 // import { Header } from "@/components/header"
 // import { Footer } from "@/components/footer"
 // import { Code, Briefcase, HardHat, Shield, TrendingUp, Users } from "lucide-react"
@@ -186,60 +188,84 @@
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Users, HardHat, Shield, Wrench, Truck, Factory } from "lucide-react"
+import Image from "next/image"
+import { useLanguage } from "@/components/language-provider"
+import { pickLang } from "@/lib/i18n"
 
 const services = [
   {
     icon: Users,
-    title: "Manpower Supply",
-    description:
-      "Certified Riggers (I, II, III), WPR, Firewatch, Safety Officers, Electricians, Welders, Helpers and full industrial manpower teams.",
+    title: { en: "Manpower Supply", ar: "توريد القوى العاملة" },
+    description: {
+      en: "Certified Riggers (I, II, III), WPR, Firewatch, Safety Officers, Electricians, Welders, Helpers and full industrial manpower teams.",
+      ar: "رافعات (I, II, III) معتمدة، مستلمو تصاريح العمل (WPR)، مراقبو الحريق، مسؤولو السلامة، كهربائيون، لحّامون، مساعدين وفرق عمالة صناعية متكاملة.",
+    },
   },
   {
     icon: Factory,
-    title: "Shutdown & Turnaround Support",
-    description:
-      "Complete shutdown manpower mobilization for petrochemical plants, refineries and industrial facilities.",
+    title: { en: "Shutdown & Turnaround Support", ar: "دعم الإيقاف والتوقفات" },
+    description: {
+      en: "Complete shutdown manpower mobilization for petrochemical plants, refineries and industrial facilities.",
+      ar: "تعبئة عمالة كاملة لمشاريع إيقاف المصانع في البتروكيماويات والمصافي والمنشآت الصناعية.",
+    },
   },
   {
     icon: Wrench,
-    title: "Industrial Maintenance Manpower",
-    description:
-      "Mechanical, electrical and instrumentation manpower for routine and breakdown maintenance.",
+    title: { en: "Industrial Maintenance Manpower", ar: "عمالة الصيانة الصناعية" },
+    description: {
+      en: "Mechanical, electrical and instrumentation manpower for routine and breakdown maintenance.",
+      ar: "كوادر ميكانيكية وكهربائية وأجهزة دقيقة للصيانة الدورية وصيانة الأعطال.",
+    },
   },
   {
     icon: HardHat,
-    title: "Mechanical & Civil Contracting",
-    description:
-      "Piping, structural fabrication, equipment erection, excavation and foundation works.",
+    title: { en: "Mechanical & Civil Contracting", ar: "مقاولات ميكانيكية ومدنية" },
+    description: {
+      en: "Piping, structural fabrication, equipment erection, excavation and foundation works.",
+      ar: "أعمال الأنابيب، تصنيع الهياكل، تركيب المعدات، الحفر وأعمال الأساسات.",
+    },
   },
   {
     icon: Truck,
-    title: "Equipment with Operator",
-    description:
-      "Cranes, forklifts, manlifts and heavy equipment with certified operators.",
+    title: { en: "Equipment with Operator", ar: "معدات مع مشغل" },
+    description: {
+      en: "Cranes, forklifts, manlifts and heavy equipment with certified operators.",
+      ar: "رافعات وفوركلفت ومان لفت ومعدات ثقيلة مع مشغلين معتمدين.",
+    },
   },
   {
     icon: Shield,
-    title: "HSE & Safety Support",
-    description:
-      "Certified safety officers, permit management, toolbox talks and safety compliance support.",
+    title: { en: "HSE & Safety Support", ar: "دعم السلامة والصحة المهنية" },
+    description: {
+      en: "Certified safety officers, permit management, toolbox talks and safety compliance support.",
+      ar: "مسؤولو سلامة معتمدون، إدارة التصاريح، اجتماعات السلامة ودعم الامتثال.",
+    },
   },
 ]
 
 export default function ServicesPage() {
+  const { lang } = useLanguage()
+
   return (
     <div className="min-h-screen bg-white">
       <Header />
 
       {/* Hero */}
-      <section className="bg-black py-20 text-white">
-        <div className="container mx-auto px-6 text-center">
+      <section className="relative bg-black pt-36 pb-28 text-white">
+        <div className="absolute inset-0 z-0">
+          <Image src="/images/hero-background.jpg" alt="" fill priority className="object-cover" />
+          <div className="absolute inset-0 bg-black/70" />
+        </div>
+
+        <div className="container mx-auto px-6 text-center relative z-10">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Manpower & Industrial Services
+            {pickLang(lang, { en: "Manpower & Industrial Services", ar: "خدمات القوى العاملة والمقاولات الصناعية" })}
           </h1>
           <p className="text-lg text-white/80 max-w-3xl mx-auto">
-            Certified manpower supply, shutdown support and industrial contracting
-            services across Saudi Arabia.
+            {pickLang(lang, {
+              en: "Certified manpower supply, shutdown support and industrial contracting services across Saudi Arabia.",
+              ar: "توريد قوى عاملة معتمدة، دعم الإيقاف والتوقفات وخدمات المقاولات الصناعية في أنحاء المملكة.",
+            })}
           </p>
         </div>
       </section>
@@ -257,10 +283,10 @@ export default function ServicesPage() {
                   <service.icon className="w-8 h-8 text-black" />
                 </div>
                 <h3 className="text-2xl font-bold text-black mb-3">
-                  {service.title}
+                  {pickLang(lang, service.title)}
                 </h3>
                 <p className="text-gray-600 leading-relaxed">
-                  {service.description}
+                  {pickLang(lang, service.description)}
                 </p>
               </div>
             ))}
@@ -271,14 +297,14 @@ export default function ServicesPage() {
       {/* Why Choose Us */}
       <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-6 text-center">
-          <h2 className="text-4xl font-bold mb-6">Why Choose Power Solid?</h2>
+          <h2 className="text-4xl font-bold mb-6">{pickLang(lang, { en: "Why Choose Power Solid?", ar: "لماذا تختار باور سوليد؟" })}</h2>
           <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-6 text-gray-700">
-            <p>✔ Fast manpower mobilization</p>
-            <p>✔ Certified & experienced workforce</p>
-            <p>✔ Strict safety & HSE compliance</p>
-            <p>✔ 24/7 shutdown manpower availability</p>
-            <p>✔ Competitive manpower rates</p>
-            <p>✔ Trusted by industrial contractors</p>
+            <p>✔ {pickLang(lang, { en: "Fast manpower mobilization", ar: "تعبئة سريعة للقوى العاملة" })}</p>
+            <p>✔ {pickLang(lang, { en: "Certified & experienced workforce", ar: "عمالة معتمدة وذات خبرة" })}</p>
+            <p>✔ {pickLang(lang, { en: "Strict safety & HSE compliance", ar: "التزام صارم بمتطلبات السلامة" })}</p>
+            <p>✔ {pickLang(lang, { en: "24/7 shutdown manpower availability", ar: "توافر عمالة الإيقاف على مدار الساعة" })}</p>
+            <p>✔ {pickLang(lang, { en: "Competitive manpower rates", ar: "أسعار تنافسية" })}</p>
+            <p>✔ {pickLang(lang, { en: "Trusted by industrial contractors", ar: "موثوق من قبل المقاولين الصناعيين" })}</p>
           </div>
         </div>
       </section>

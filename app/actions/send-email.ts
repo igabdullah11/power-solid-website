@@ -95,7 +95,7 @@ export async function sendContactEmail(formData: {
   phone: string
   subject: string
   message: string
-}) {
+}, lang: "en" | "ar" = "en") {
   try {
     const emailHtml = `
       <h2>Power Solid - New Website Inquiry</h2>
@@ -130,13 +130,19 @@ export async function sendContactEmail(formData: {
 
     return {
       success: true,
-      message: "✅ Your manpower request has been sent successfully!",
+      message:
+        lang === "ar"
+          ? "تم إرسال طلب القوى العاملة بنجاح."
+          : "Your manpower request has been sent successfully!",
     }
   } catch (error) {
     console.error("Email Error:", error)
     return {
       success: false,
-      message: "❌ Failed to send email. Please call +966 55 216 3720 instead.",
+      message:
+        lang === "ar"
+          ? "تعذر إرسال الطلب. يرجى الاتصال على +966 55 216 3720."
+          : "Failed to send email. Please call +966 55 216 3720 instead.",
     }
   }
 }
