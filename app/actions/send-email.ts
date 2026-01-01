@@ -97,6 +97,11 @@ export async function sendContactEmail(formData: {
   message: string
 }, lang: "en" | "ar" = "en") {
   try {
+    const resendApiKey = process.env.RESEND_API_KEY
+    if (!resendApiKey) {
+      throw new Error("Missing RESEND_API_KEY")
+    }
+
     const emailHtml = `
       <h2>Power Solid - New Website Inquiry</h2>
       <p><strong>Name:</strong> ${formData.fullName}</p>
@@ -111,11 +116,11 @@ export async function sendContactEmail(formData: {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+        Authorization: `Bearer ${resendApiKey}`,
       },
       body: JSON.stringify({
         from: "Power Solid Website <onboarding@resend.dev>", // ✅ allowed for testing
-        to: ["igabdullah11@gmail.com"], // ✅ TEST EMAIL FIRST
+        to: ["info@powersolid-intl.com"],
         reply_to: formData.email,
         subject: `New Manpower Request: ${formData.subject}`,
         html: emailHtml,
@@ -124,8 +129,8 @@ export async function sendContactEmail(formData: {
 
     if (!response.ok) {
       const errorText = await response.text()
-      console.error("Resend Error:", errorText)
-      throw new Error("Email failed")
+      console.error("Resend Error:", response.status, errorText)
+      throw new Error(`Resend request failed (${response.status})`)
     }
 
     return {
@@ -141,8 +146,8 @@ export async function sendContactEmail(formData: {
       success: false,
       message:
         lang === "ar"
-          ? "تعذر إرسال الطلب. يرجى الاتصال على +966 55 216 3720."
-          : "Failed to send email. Please call +966 55 216 3720 instead.",
+          ? "تعذر إرسال الطلب. يرجى الاتصال على +966 058 194 5796 أو مراسلتنا على info@powersolid-intl.com."
+          : "Failed to send email. Please call +966 058 194 5796 or email info@powersolid-intl.com.",
     }
   }
 }

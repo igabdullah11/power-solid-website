@@ -174,11 +174,11 @@ export function Header() {
 
                   <div className="mt-auto px-5 py-5 border-t border-navy-light text-xs text-white/60">
                     <p className="mb-2">{pickLang(lang, { en: "Contact us directly:", ar: "تواصل معنا مباشرة:" })}</p>
-                    <a href="tel:+966552163720" className="block font-semibold text-white mb-1">
-                      +966 55 216 3720
+                    <a href="tel:+966581945796" className="block font-semibold text-white mb-1">
+                      +966 058 194 5796
                     </a>
-                    <a href="mailto:info@psc-intl.com" className="text-accent">
-                      info@psc-intl.com
+                    <a href="mailto:info@powersolid-intl.com" className="text-accent">
+                      info@powersolid-intl.com
                     </a>
                   </div>
                 </SheetContent>

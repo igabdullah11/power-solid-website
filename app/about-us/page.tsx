@@ -14,9 +14,9 @@ export default function AboutUsPage() {
       <Header />
 
       {/* PAGE CONTENT */}
-      <main className="flex-1 bg-[#020617] text-white">
+      <main className="flex-1">
         {/* Top banner */}
-        <section className="border-b border-white/5 bg-[radial-gradient(circle_at_top,#facc15_0,transparent_45%),#020617] pt-32 md:pt-36">
+        <section className="border-b border-white/10 bg-primary pt-32 md:pt-36 text-white">
           <div className="container mx-auto px-6 py-12 md:py-16">
             <p className="text-xs md:text-sm font-semibold tracking-[0.18em] text-[#facc15] uppercase mb-3">
               {pickLang(lang, { en: "About Power Solid Company", ar: "عن شركة باور سوليد" })}
@@ -37,24 +37,24 @@ export default function AboutUsPage() {
         </section>
 
         {/* Main about content */}
-        <section className="bg-[#020617]">
+        <section className="bg-background text-foreground">
           <div className="container mx-auto px-6 py-12 md:py-16 grid gap-10 md:grid-cols-[1.7fr,1.3fr]">
             {/* Left column – story + detailed paragraph */}
             <div>
               <h2 className="text-xl md:text-2xl font-semibold mb-4">{pickLang(lang, { en: "Who we are", ar: "من نحن" })}</h2>
-              <p className="text-sm md:text-base text-white/80 mb-4">
+              <p className="text-sm md:text-base text-muted-foreground mb-4">
                 {pickLang(lang, {
                   en: "Power Solid supplies certified Riggers (I, II, III), Work Permit Receivers, Firewatchers, Safety Officers, helpers and complete shutdown teams across Jubail, the Eastern Province and all over KSA – with a strong focus on safety, compliance and on-time mobilization.",
                   ar: "توفر باور سوليد رافعين معتمدين (I, II, III)، ومستلمي تصاريح العمل، ومراقبي الحريق، ومسؤولي السلامة، والمساعدين، وفرق الإيقاف المتكاملة في الجبيل والمنطقة الشرقية وجميع أنحاء المملكة — مع تركيز قوي على السلامة والامتثال والتعبئة في الوقت المحدد.",
                 })}
               </p>
-              <p className="text-sm md:text-base text-white/80 mb-4">
+              <p className="text-sm md:text-base text-muted-foreground mb-4">
                 {pickLang(lang, {
                   en: "Our teams are trained to work in demanding industrial environments – refineries, petrochemical plants, construction sites and shutdown projects – supporting our clients’ operations while meeting site-specific procedures and international safety standards.",
                   ar: "فرقنا مدرّبة للعمل في بيئات صناعية عالية المتطلبات — المصافي ومصانع البتروكيماويات ومواقع الإنشاء ومشاريع الإيقاف — لدعم عمليات عملائنا مع الالتزام بإجراءات المواقع ومعايير السلامة الدولية.",
                 })}
               </p>
-              <p className="text-sm md:text-base text-white/80">
+              <p className="text-sm md:text-base text-muted-foreground">
                 {pickLang(lang, {
                   en: "We aim to be a long-term partner to our clients, not just a manpower supplier. That means understanding project schedules, site requirements and permit systems, and mobilizing the right people at the right time so work can progress without delays.",
                   ar: "نسعى لأن نكون شريكاً طويل الأمد لعملائنا وليس مجرد مورد عمالة. وهذا يعني فهم جداول المشاريع ومتطلبات المواقع وأنظمة التصاريح، وتعبئة الأشخاص المناسبين في الوقت المناسب حتى تتقدم الأعمال دون تأخير.",
@@ -63,11 +63,11 @@ export default function AboutUsPage() {
             </div>
 
             {/* Right column – quick facts / categories */}
-            <div className="bg-white/5 border border-white/10 rounded-3xl p-6 md:p-7 lg:p-8 backdrop-blur">
+            <div className="bg-muted/40 border border-border rounded-3xl p-6 md:p-7 lg:p-8">
               <h3 className="text-lg md:text-xl font-semibold mb-4">
                 {pickLang(lang, { en: "Core manpower categories", ar: "فئات القوى العاملة الأساسية" })}
               </h3>
-              <ul className="space-y-3 text-sm md:text-base text-white/85 mb-6">
+              <ul className="space-y-3 text-sm md:text-base text-muted-foreground mb-6">
                 <li>• {pickLang(lang, { en: "Riggers – Levels I, II & III", ar: "رافعات — المستويات I وII وIII" })}</li>
                 <li>• {pickLang(lang, { en: "Work Permit Receivers (WPR)", ar: "مستلمو تصاريح العمل (WPR)" })}</li>
                 <li>• {pickLang(lang, { en: "Firewatchers & Hole-watchers", ar: "مراقبو الحريق ومراقبو الفتحات" })}</li>
@@ -79,7 +79,7 @@ export default function AboutUsPage() {
               <h3 className="text-lg md:text-xl font-semibold mb-3">
                 {pickLang(lang, { en: "Where we operate", ar: "نطاق عملنا" })}
               </h3>
-              <p className="text-sm md:text-base text-white/80 mb-4">
+              <p className="text-sm md:text-base text-muted-foreground mb-4">
                 {pickLang(lang, {
                   en: "Our primary focus is Jubail and the Eastern Province, supporting major industrial facilities and contractors on both offshore and onshore projects. We regularly deploy teams to refineries, petrochemical plants, construction sites, ports and offshore facilities across Saudi Arabia.",
                   ar: "يتركز عملنا بشكل أساسي في الجبيل والمنطقة الشرقية، لدعم المنشآت الصناعية الكبرى والمقاولين في المشاريع البرية والبحرية. نقوم بشكل منتظم بتجهيز الفرق للمصافي ومصانع البتروكيماويات ومواقع الإنشاء والموانئ والمنشآت البحرية في أنحاء المملكة.",
@@ -89,7 +89,7 @@ export default function AboutUsPage() {
               <h3 className="text-lg md:text-xl font-semibold mb-3">
                 {pickLang(lang, { en: "Why clients choose Power Solid", ar: "لماذا يختار العملاء باور سوليد" })}
               </h3>
-              <ul className="space-y-2 text-sm md:text-base text-white/80">
+              <ul className="space-y-2 text-sm md:text-base text-muted-foreground">
                 <li>• {pickLang(lang, { en: "Certified and experienced industrial manpower", ar: "عمالة صناعية معتمدة وذات خبرة" })}</li>
                 <li>• {pickLang(lang, { en: "Strong safety culture and compliance mindset", ar: "ثقافة سلامة قوية ونهج امتثال" })}</li>
                 <li>• {pickLang(lang, { en: "Fast mobilization for shutdowns and urgent needs", ar: "تعبئة سريعة للإيقافات والاحتياجات العاجلة" })}</li>
@@ -101,7 +101,7 @@ export default function AboutUsPage() {
         </section>
 
         {/* Process / how we work */}
-        <section className="bg-[#020617] border-t border-white/5">
+        <section className="bg-[#020617] border-t border-white/5 text-white">
           <div className="container mx-auto px-6 py-12 md:py-16">
             <h2 className="text-xl md:text-2xl font-semibold mb-6">
               {pickLang(lang, { en: "How we work with our clients", ar: "كيف نعمل مع عملائنا" })}
