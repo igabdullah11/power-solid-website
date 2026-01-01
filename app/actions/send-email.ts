@@ -6,11 +6,8 @@ import { headers } from "next/headers"
 const RATE_LIMIT_WINDOW_MS = 60_000
 const RATE_LIMIT_MAX = 5
 
-// ✅ YOUR VERIFIED RESEND EMAIL (receiver in testing)
+// CHANGE THIS to your verified Resend email
 const TESTING_RECIPIENT = "igabdullah11@gmail.com"
-
-// ✅ SAFE TESTING FROM (DO NOT CHANGE)
-const TESTING_FROM = "Power Solid Website <onboarding@resend.dev>"
 
 /* ------------------ RATE LIMIT ------------------ */
 const rateLimitStore = new Map<string, { count: number; resetAt: number }>()
@@ -59,6 +56,15 @@ function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 }
 
+function parseRecipientList(raw?: string): string[] {
+  if (!raw) return []
+  return raw
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .filter(isValidEmail)
+}
+
 /* ------------------ MAIN ACTION ------------------ */
 export async function sendContactEmail(
   formData: {
@@ -78,7 +84,7 @@ export async function sendContactEmail(
       throw new Error("Missing RESEND_API_KEY")
     }
 
-    // ✅ Correct Vercel environment detection
+    /* ---------- ENV DETECTION (VERCEL-SAFE) ---------- */
     const isProd = process.env.VERCEL_ENV === "production"
 
     /* ---------- INPUT SANITIZATION ---------- */
@@ -108,7 +114,9 @@ export async function sendContactEmail(
       }
     }
 
-    /* ---------- EMAIL HTML ---------- */
+    /* ---------- SAFE HTML ---------- */
+    const safeMessageHtml = escapeHtml(messageRaw).replace(/\n/g, "<br/>")
+
     const emailHtml = `
       <h2>Power Solid - New Website Inquiry</h2>
       <p><strong>Name:</strong> ${escapeHtml(fullName)}</p>
@@ -116,21 +124,36 @@ export async function sendContactEmail(
       <p><strong>Phone:</strong> ${escapeHtml(phone)}</p>
       <p><strong>Subject:</strong> ${escapeHtml(subject)}</p>
       <p><strong>Message:</strong></p>
-      <p>${escapeHtml(messageRaw).replace(/\n/g, "<br/>")}</p>
+      <p>${safeMessageHtml}</p>
     `
 
-    /* ---------- FROM + TO (CRITICAL FIX) ---------- */
-    const from = isProd
-      ? process.env.RESEND_FROM // must be verified domain later
-      : TESTING_FROM             // 👈 ALWAYS resend.dev in testing
+    /* ---------- FROM ADDRESS ---------- */
+    const resendFromEnv = process.env.RESEND_FROM
+    const resendFrom =
+      resendFromEnv || "Power Solid Website <onboarding@resend.dev>"
 
-    if (isProd && !from) {
-      throw new Error("RESEND_FROM must be set in production")
+    if (
+      isProd &&
+      (!resendFromEnv || resendFrom.includes("onboarding@resend.dev"))
+    ) {
+      throw new Error(
+        "RESEND_FROM must be a verified domain email in production."
+      )
     }
 
-    const to = isProd
-      ? ["info@powersolid-intl.com"] // future real inbox
-      : [TESTING_RECIPIENT]          // 👈 ONLY allowed in testing
+    /* ---------- RECIPIENT LOGIC ---------- */
+    const recipientsFromResendTo = parseRecipientList(process.env.RESEND_TO)
+    const recipientsFromContactTo = parseRecipientList(
+      process.env.CONTACT_EMAIL_TO
+    )
+
+    const recipients = isProd
+      ? recipientsFromResendTo.length
+        ? recipientsFromResendTo
+        : recipientsFromContactTo.length
+          ? recipientsFromContactTo
+          : ["igabdullah11@gmail.com"]
+      : [TESTING_RECIPIENT] // 👈 RESEND TEST MODE FIX
 
     /* ---------- SEND ---------- */
     const response = await fetch("https://api.resend.com/emails", {
@@ -140,8 +163,8 @@ export async function sendContactEmail(
         Authorization: `Bearer ${resendApiKey}`,
       },
       body: JSON.stringify({
-        from,
-        to,
+        from: resendFrom,
+        to: recipients,
         reply_to: email,
         subject: `New Manpower Request: ${subject}`,
         html: emailHtml,
@@ -150,7 +173,7 @@ export async function sendContactEmail(
 
     if (!response.ok) {
       const errorText = await response.text()
-      console.error("Resend Error:", errorText)
+      console.error("Resend Error:", response.status, errorText)
       throw new Error("Resend request failed")
     }
 
