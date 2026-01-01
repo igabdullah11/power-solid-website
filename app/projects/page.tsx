@@ -543,8 +543,6 @@ export default function ProjectsPage() {
           fill
           className="object-cover"
           priority
-          sizes="100vw"
-          quality={70}
         />
         <div className="container mx-auto px-4 relative z-20 text-center">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
@@ -596,8 +594,6 @@ export default function ProjectsPage() {
                     alt={pickLang(lang, project.title)}
                     fill
                     className="object-cover"
-                    sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-                    quality={70}
                   />
                 </div>
 
