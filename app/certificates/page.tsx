@@ -193,6 +193,7 @@
 import Header from "@/components/header"
 import Footer from "@/components/footer"
 import { Award } from "lucide-react"
+import Image from "next/image"
 import { useLanguage } from "@/components/language-provider"
 import { pickLang } from "@/lib/i18n"
 
@@ -258,8 +259,13 @@ export default function CertificatesPage() {
       <Header />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-gray-900 via-black to-gray-900 pt-36 pb-28 text-white">
-        <div className="container mx-auto px-4 text-center">
+      <section className="relative bg-black pt-36 pb-28 text-white">
+        <div className="absolute inset-0 z-0">
+          <Image src="/refinery-turnaround-maintenance.jpg" alt="" fill priority className="object-cover" />
+          <div className="absolute inset-0 bg-black/70" />
+        </div>
+
+        <div className="container mx-auto px-4 text-center relative z-10">
           <h1 className="mb-4 text-4xl font-bold md:text-5xl">
             {pickLang(lang, { en: "Certifications & Compliance", ar: "الشهادات والامتثال" })}
           </h1>

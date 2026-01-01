@@ -95,32 +95,23 @@ export function Footer() {
               <li className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-accent mt-0.5 flex-shrink-0" />
                 <span className="text-white/60 text-sm">
-                  {pickLang(lang, {
-                    en: "Jubail Industrial City",
-                    ar: "مدينة الجبيل الصناعية",
-                  })}
+                  {pickLang(lang, { en: "Jubail Industrial City", ar: "مدينة الجبيل الصناعية" })}
                   <br />
-                  {pickLang(lang, {
-                    en: "Eastern Province",
-                    ar: "المنطقة الشرقية",
-                  })}
+                  {pickLang(lang, { en: "Eastern Province", ar: "المنطقة الشرقية" })}
                   <br />
-                  {pickLang(lang, {
-                    en: "Saudi Arabia",
-                    ar: "المملكة العربية السعودية",
-                  })}
+                  {pickLang(lang, { en: "Saudi Arabia", ar: "المملكة العربية السعودية" })}
                 </span>
               </li>
               <li className="flex items-start gap-3">
                 <Phone className="w-5 h-5 text-accent mt-0.5 flex-shrink-0" />
-                <a href="tel:+966552163720" className="text-white/60 hover:text-accent transition-colors text-sm">
-                  +966 55 216 3720
+                <a href="tel:+966581945796" className="text-white/60 hover:text-accent transition-colors text-sm">
+                  +966 058 194 5796
                 </a>
               </li>
               <li className="flex items-start gap-3">
                 <Mail className="w-5 h-5 text-accent mt-0.5 flex-shrink-0" />
-                <a href="mailto:info@psc-intl.com" className="text-white/60 hover:text-accent transition-colors text-sm">
-                  info@psc-intl.com
+                <a href="mailto:info@powersolid-intl.com" className="text-white/60 hover:text-accent transition-colors text-sm">
+                  info@powersolid-intl.com
                 </a>
               </li>
             </ul>

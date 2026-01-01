@@ -324,8 +324,8 @@ export default function ContactUsPage() {
       setSubmitStatus({
         type: "error",
         message: pickLang(lang, {
-          en: "An unexpected error occurred. Please contact us directly at info@psc-intl.com",
-          ar: "حدث خطأ غير متوقع. يرجى التواصل معنا مباشرة عبر info@psc-intl.com",
+          en: "An unexpected error occurred. Please contact us directly at info@powersolid-intl.com",
+          ar: "حدث خطأ غير متوقع. يرجى التواصل معنا مباشرة عبر info@powersolid-intl.com",
         }),
       })
     } finally {
@@ -377,8 +377,8 @@ export default function ContactUsPage() {
                 </div>
                 <div>
                   <h3 className="font-bold mb-1">{pickLang(lang, { en: "Phone", ar: "الهاتف" })}</h3>
-                  <a href="tel:+966551429094" className="text-gray-600 hover:text-[#d4af37]">
-                    +966 55 142 9094
+                  <a href="tel:+966581945796" className="text-gray-600 hover:text-[#d4af37]">
+                    +966 058 194 5796
                   </a>
                 </div>
               </div>
@@ -389,8 +389,8 @@ export default function ContactUsPage() {
                 </div>
                 <div>
                   <h3 className="font-bold mb-1">{pickLang(lang, { en: "Email", ar: "البريد الإلكتروني" })}</h3>
-                  <a href="mailto:info@psc-intl.com" className="text-gray-600 hover:text-[#d4af37]">
-                    info@psc-intl.com
+                  <a href="mailto:info@powersolid-intl.com" className="text-gray-600 hover:text-[#d4af37]">
+                    info@powersolid-intl.com
                   </a>
                 </div>
               </div>
