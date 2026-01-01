@@ -11,43 +11,43 @@ const SLIDES = [
     id: 1,
     heading: { en: "Certified Manpower.", ar: "قوى عاملة معتمدة." },
     highlight: { en: "Industrial Ready.", ar: "جاهزة للمواقع الصناعية." },
-    image: "/hero1.webp",
+    image: "/optimized/hero1.webp",
   },
   {
     id: 2,
     heading: { en: "Shutdown & Turnaround Teams", ar: "فرق الإيقاف والتوقفات" },
     highlight: { en: "— On Time.", ar: "— في الوقت المحدد." },
-    image: "/hero2.webp",
+    image: "/optimized/hero2.webp",
   },
   {
     id: 3,
     heading: { en: "Your Offshore & Onshore", ar: "شريكك في المشاريع" },
     highlight: { en: "Contracting Partner.", ar: "البرية والبحرية." },
-    image: "/hero3.webp",
+    image: "/optimized/hero3.webp",
   },
   {
     id: 4,
     heading: { en: "Safety-First Workforce", ar: "قوى عاملة تضع السلامة أولاً" },
     highlight: { en: "for Critical Sites.", ar: "للمواقع الحساسة." },
-    image: "/hero4.webp",
+    image: "/optimized/hero4.webp",
   },
   {
     id: 5,
     heading: { en: "Fast Mobilization", ar: "تعبئة سريعة" },
     highlight: { en: "Across Saudi Arabia.", ar: "في أنحاء المملكة." },
-    image: "/hero5.webp",
+    image: "/optimized/hero5.webp",
   },
   {
     id: 6,
     heading: { en: "Quality Construction Materials.", ar: "مواد إنشائية بجودة عالية." },
     highlight: { en: "Delivered On Site.", ar: "تسليم مباشر للموقع." },
-    image: "/hero6.webp",
+    image: "/optimized/hero6.webp",
   },
   {
     id: 7,
     heading: { en: "Trusted Supply Partner", ar: "شريك توريد موثوق" },
     highlight: { en: "for Projects & Contractors.", ar: "للمشاريع والمقاولين." },
-    image: "/hero7.webp",
+    image: "/optimized/hero7.webp",
   },
 ]
 
@@ -65,14 +65,19 @@ export function HeroSection() {
   const resumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const currentSlide = useMemo(() => SLIDES[currentIndex], [currentIndex])
 
-  // ✅ Preload + decode slides ASAP (smooth transitions)
+  // Preload only adjacent slides to avoid pulling *all* large hero images on first load.
   useEffect(() => {
-    SLIDES.forEach(({ image }) => {
+    const preload = (index: number) => {
+      const slide = SLIDES[index]
+      if (!slide) return
       const img = new window.Image()
-      img.src = image
+      img.src = slide.image
       img.decode?.().catch(() => {})
-    })
-  }, [])
+    }
+
+    preload((currentIndex + 1) % SLIDES.length)
+    preload((currentIndex - 1 + SLIDES.length) % SLIDES.length)
+  }, [currentIndex])
 
   const startTransitionTo = (nextIndex: number) => {
     setIsTransitioning(true)
@@ -143,6 +148,7 @@ export function HeroSection() {
             alt=""
             fill
             sizes="100vw"
+            quality={80}
             priority={i === 0}
             className={`object-cover ${i === currentIndex && !isTransitioning ? "hero-kenburns" : ""}`}
           />

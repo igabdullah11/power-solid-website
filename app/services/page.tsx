@@ -253,7 +253,15 @@ export default function ServicesPage() {
       {/* Hero */}
       <section className="relative bg-black pt-36 pb-28 text-white">
         <div className="absolute inset-0 z-0">
-          <Image src="/images/hero-background.jpg" alt="" fill priority className="object-cover" />
+          <Image
+            src="/optimized/hero-background.webp"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            quality={80}
+            className="object-cover"
+          />
           <div className="absolute inset-0 bg-black/70" />
         </div>
 

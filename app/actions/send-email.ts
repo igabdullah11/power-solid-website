@@ -89,6 +89,58 @@
 // }
 "use server"
 
+import { headers } from "next/headers"
+
+const RATE_LIMIT_WINDOW_MS = 60_000
+const RATE_LIMIT_MAX = 5
+const rateLimitStore = new Map<string, { count: number; resetAt: number }>()
+
+async function getClientIp(): Promise<string> {
+  const h = await headers()
+  const forwardedFor = h.get("x-forwarded-for")
+  const realIp = h.get("x-real-ip")
+
+  const ip = (forwardedFor ? forwardedFor.split(",")[0] : realIp)?.trim()
+  return ip || "unknown"
+}
+
+function enforceRateLimit(key: string) {
+  const now = Date.now()
+  const existing = rateLimitStore.get(key)
+
+  if (!existing || existing.resetAt <= now) {
+    rateLimitStore.set(key, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS })
+    return
+  }
+
+  existing.count += 1
+  if (existing.count > RATE_LIMIT_MAX) {
+    throw new Error("Rate limited")
+  }
+}
+
+function normalizeLine(value: string): string {
+  return value.replace(/[\r\n]+/g, " ").trim()
+}
+
+function clamp(value: string, maxLen: number): string {
+  return value.length > maxLen ? value.slice(0, maxLen) : value
+}
+
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\"/g, "&quot;")
+    .replace(/'/g, "&#39;")
+}
+
+function isValidEmail(email: string): boolean {
+  // Simple sanity check (not RFC-complete)
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+}
+
 export async function sendContactEmail(formData: {
   fullName: string
   email: string
@@ -97,19 +149,56 @@ export async function sendContactEmail(formData: {
   message: string
 }, lang: "en" | "ar" = "en") {
   try {
+    enforceRateLimit(`contact:${await getClientIp()}`)
+
     const resendApiKey = process.env.RESEND_API_KEY
     if (!resendApiKey) {
       throw new Error("Missing RESEND_API_KEY")
     }
 
+    const fullName = clamp(normalizeLine(formData.fullName || ""), 120)
+    const email = clamp(normalizeLine(formData.email || ""), 254)
+    const phone = clamp(normalizeLine(formData.phone || ""), 50)
+    const subject = clamp(normalizeLine(formData.subject || ""), 160)
+    const messageRaw = clamp((formData.message || "").trim(), 10_000)
+
+    if (!fullName || !email || !subject || !messageRaw) {
+      return {
+        success: false,
+        message:
+          lang === "ar"
+            ? "يرجى تعبئة الحقول المطلوبة."
+            : "Please fill in the required fields.",
+      }
+    }
+
+    if (!isValidEmail(email)) {
+      return {
+        success: false,
+        message:
+          lang === "ar"
+            ? "يرجى إدخال بريد إلكتروني صحيح."
+            : "Please enter a valid email address.",
+      }
+    }
+
+    const safeFullName = escapeHtml(fullName)
+    const safeEmail = escapeHtml(email)
+    const safePhone = escapeHtml(phone)
+    const safeSubject = escapeHtml(subject)
+    const safeMessageHtml = escapeHtml(messageRaw).replace(/\n/g, "<br/>")
+
+    const resendFrom = process.env.RESEND_FROM || "Power Solid Website <onboarding@resend.dev>"
+    const replyTo = email // already newline-stripped by normalizeLine
+
     const emailHtml = `
       <h2>Power Solid - New Website Inquiry</h2>
-      <p><strong>Name:</strong> ${formData.fullName}</p>
-      <p><strong>Email:</strong> ${formData.email}</p>
-      <p><strong>Phone:</strong> ${formData.phone}</p>
-      <p><strong>Subject:</strong> ${formData.subject}</p>
+      <p><strong>Name:</strong> ${safeFullName}</p>
+      <p><strong>Email:</strong> ${safeEmail}</p>
+      <p><strong>Phone:</strong> ${safePhone}</p>
+      <p><strong>Subject:</strong> ${safeSubject}</p>
       <p><strong>Message:</strong></p>
-      <p>${formData.message.replace(/\n/g, "<br/>")}</p>
+      <p>${safeMessageHtml}</p>
     `
 
     const response = await fetch("https://api.resend.com/emails", {
@@ -119,10 +208,10 @@ export async function sendContactEmail(formData: {
         Authorization: `Bearer ${resendApiKey}`,
       },
       body: JSON.stringify({
-        from: "Power Solid Website <onboarding@resend.dev>", // ✅ allowed for testing
+        from: resendFrom,
         to: ["info@powersolid-intl.com"],
-        reply_to: formData.email,
-        subject: `New Manpower Request: ${formData.subject}`,
+        reply_to: replyTo,
+        subject: `New Manpower Request: ${subject}`,
         html: emailHtml,
       }),
     })
