@@ -197,13 +197,34 @@ export async function sendContactEmail(formData: {
     const safeSubject = escapeHtml(subject)
     const safeMessageHtml = escapeHtml(messageRaw).replace(/\n/g, "<br/>")
 
-    const resendFrom = process.env.RESEND_FROM || "Power Solid Website <onboarding@resend.dev>"
-    const configuredRecipients =
-      parseRecipientList(process.env.RESEND_TO) ||
-      parseRecipientList(process.env.CONTACT_EMAIL_TO)
-    const recipients = configuredRecipients.length
-      ? configuredRecipients
-      : ["info@powersolid-intl.com"]
+    const isProd = process.env.NODE_ENV === "production"
+
+    // IMPORTANT:
+    // - If RESEND_FROM is not set, we previously fell back to onboarding@resend.dev (Resend testing sender)
+    // - That keeps the project stuck in Resend "testing" restrictions.
+    // In production we fail fast instead, so you immediately notice misconfigured env vars.
+    const resendFromEnv = process.env.RESEND_FROM
+    const resendFrom = resendFromEnv || "Power Solid Website <onboarding@resend.dev>"
+    if (isProd && (!resendFromEnv || resendFrom.includes("onboarding@resend.dev"))) {
+      throw new Error(
+        "RESEND_FROM must be set to a sender on a verified Resend domain (do not use onboarding@resend.dev in production)."
+      )
+    }
+
+    // NOTE: arrays are always truthy in JS, even when empty. So `a || b` is NOT a safe fallback.
+    const recipientsFromResendTo = parseRecipientList(process.env.RESEND_TO)
+    const recipientsFromContactTo = parseRecipientList(process.env.CONTACT_EMAIL_TO)
+    const recipients = recipientsFromResendTo.length
+      ? recipientsFromResendTo
+      : recipientsFromContactTo.length
+        ? recipientsFromContactTo
+        : ["info@powersolid-intl.com"]
+
+    if (isProd && recipients.length === 1 && recipients[0] === "info@powersolid-intl.com") {
+      // Optional: force explicit recipient configuration in prod.
+      // Comment this out if you prefer the default.
+      // throw new Error("Missing RESEND_TO/CONTACT_EMAIL_TO in production")
+    }
     const replyTo = email // already newline-stripped by normalizeLine
 
     const emailHtml = `
