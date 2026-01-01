@@ -1,107 +1,22 @@
-// "use server"
-
-// export async function sendContactEmail(formData: {
-//   fullName: string
-//   email: string
-//   phone: string
-//   subject: string
-//   message: string
-// }) {
-//   try {
-//     // Email content in HTML format
-//     const emailHtml = `
-//       <!DOCTYPE html>
-//       <html>
-//         <head>
-//           <style>
-//             body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-//             .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-//             .header { background-color: #d4af37; padding: 20px; text-align: center; }
-//             .header h1 { color: #000; margin: 0; }
-//             .content { background-color: #f9f9f9; padding: 20px; margin-top: 20px; }
-//             .field { margin-bottom: 15px; }
-//             .field strong { color: #000; }
-//             .footer { margin-top: 20px; padding: 20px; text-align: center; color: #666; font-size: 12px; }
-//           </style>
-//         </head>
-//         <body>
-//           <div class="container">
-//             <div class="header">
-//               <h1>Power Solid - New Contact Form Submission</h1>
-//             </div>
-//             <div class="content">
-//               <div class="field">
-//                 <strong>From:</strong> ${formData.fullName}
-//               </div>
-//               <div class="field">
-//                 <strong>Email:</strong> ${formData.email}
-//               </div>
-//               <div class="field">
-//                 <strong>Phone:</strong> ${formData.phone}
-//               </div>
-//               <div class="field">
-//                 <strong>Subject:</strong> ${formData.subject}
-//               </div>
-//               <div class="field">
-//                 <strong>Message:</strong><br/>
-//                 ${formData.message.replace(/\n/g, "<br/>")}
-//               </div>
-//             </div>
-//             <div class="footer">
-//               This email was sent from the Power Solid website contact form.
-//             </div>
-//           </div>
-//         </body>
-//       </html>
-//     `
-
-//     // Send email using fetch to a mailto link or email API
-//     // For now, we'll use a simple approach with fetch to a serverless function
-//     const response = await fetch("https://api.resend.com/emails", {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//         Authorization: `Bearer ${process.env.RESEND_API_KEY || ""}`,
-//       },
-//       body: JSON.stringify({
-//         from: "Power Solid Website <onboarding@resend.dev>",
-//         to: ["info@psc-intl.com"],
-//         reply_to: formData.email,
-//         subject: `New Contact Form: ${formData.subject}`,
-//         html: emailHtml,
-//       }),
-//     })
-
-//     if (!response.ok) {
-//       // If Resend fails, create a fallback using mailto
-//       console.log("[v0] Email API failed, contact form data:", formData)
-//       throw new Error("Failed to send email")
-//     }
-
-//     return { success: true, message: "Email sent successfully!" }
-//   } catch (error) {
-//     console.error("[v0] Error sending email:", error)
-//     return {
-//       success: false,
-//       message: "Failed to send email. Please try contacting us directly at info@psc-intl.com or call +966 55 142 9094.",
-//     }
-//   }
-// }
 "use server"
 
 import { headers } from "next/headers"
 
+/* ------------------ CONFIG ------------------ */
 const RATE_LIMIT_WINDOW_MS = 60_000
 const RATE_LIMIT_MAX = 5
+
+// CHANGE THIS to your verified Resend email
+const TESTING_RECIPIENT = "igabdullah11@gmail.com"
+
+/* ------------------ RATE LIMIT ------------------ */
 const rateLimitStore = new Map<string, { count: number; resetAt: number }>()
 
 async function getClientIp(): Promise<string> {
   const h = await headers()
   const forwardedFor = h.get("x-forwarded-for")
   const realIp = h.get("x-real-ip")
-
-  const ip = (forwardedFor ? forwardedFor.split(",")[0] : realIp)?.trim()
-  return ip || "unknown"
+  return (forwardedFor ? forwardedFor.split(",")[0] : realIp)?.trim() || "unknown"
 }
 
 function enforceRateLimit(key: string) {
@@ -119,6 +34,7 @@ function enforceRateLimit(key: string) {
   }
 }
 
+/* ------------------ HELPERS ------------------ */
 function normalizeLine(value: string): string {
   return value.replace(/[\r\n]+/g, " ").trim()
 }
@@ -132,16 +48,15 @@ function escapeHtml(value: string): string {
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
-    .replace(/\"/g, "&quot;")
+    .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;")
 }
 
 function isValidEmail(email: string): boolean {
-  // Simple sanity check (not RFC-complete)
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 }
 
-function parseRecipientList(raw: string | undefined): string[] {
+function parseRecipientList(raw?: string): string[] {
   if (!raw) return []
   return raw
     .split(",")
@@ -150,13 +65,17 @@ function parseRecipientList(raw: string | undefined): string[] {
     .filter(isValidEmail)
 }
 
-export async function sendContactEmail(formData: {
-  fullName: string
-  email: string
-  phone: string
-  subject: string
-  message: string
-}, lang: "en" | "ar" = "en") {
+/* ------------------ MAIN ACTION ------------------ */
+export async function sendContactEmail(
+  formData: {
+    fullName: string
+    email: string
+    phone: string
+    subject: string
+    message: string
+  },
+  lang: "en" | "ar" = "en"
+) {
   try {
     enforceRateLimit(`contact:${await getClientIp()}`)
 
@@ -165,6 +84,10 @@ export async function sendContactEmail(formData: {
       throw new Error("Missing RESEND_API_KEY")
     }
 
+    /* ---------- ENV DETECTION (VERCEL-SAFE) ---------- */
+    const isProd = process.env.VERCEL_ENV === "production"
+
+    /* ---------- INPUT SANITIZATION ---------- */
     const fullName = clamp(normalizeLine(formData.fullName || ""), 120)
     const email = clamp(normalizeLine(formData.email || ""), 254)
     const phone = clamp(normalizeLine(formData.phone || ""), 50)
@@ -191,52 +114,48 @@ export async function sendContactEmail(formData: {
       }
     }
 
-    const safeFullName = escapeHtml(fullName)
-    const safeEmail = escapeHtml(email)
-    const safePhone = escapeHtml(phone)
-    const safeSubject = escapeHtml(subject)
+    /* ---------- SAFE HTML ---------- */
     const safeMessageHtml = escapeHtml(messageRaw).replace(/\n/g, "<br/>")
-
-    const isProd = process.env.NODE_ENV === "production"
-
-    // IMPORTANT:
-    // - If RESEND_FROM is not set, we previously fell back to onboarding@resend.dev (Resend testing sender)
-    // - That keeps the project stuck in Resend "testing" restrictions.
-    // In production we fail fast instead, so you immediately notice misconfigured env vars.
-    const resendFromEnv = process.env.RESEND_FROM
-    const resendFrom = resendFromEnv || "Power Solid Website <onboarding@resend.dev>"
-    if (isProd && (!resendFromEnv || resendFrom.includes("onboarding@resend.dev"))) {
-      throw new Error(
-        "RESEND_FROM must be set to a sender on a verified Resend domain (do not use onboarding@resend.dev in production)."
-      )
-    }
-
-    // NOTE: arrays are always truthy in JS, even when empty. So `a || b` is NOT a safe fallback.
-    const recipientsFromResendTo = parseRecipientList(process.env.RESEND_TO)
-    const recipientsFromContactTo = parseRecipientList(process.env.CONTACT_EMAIL_TO)
-    const recipients = recipientsFromResendTo.length
-      ? recipientsFromResendTo
-      : recipientsFromContactTo.length
-        ? recipientsFromContactTo
-        : ["info@powersolid-intl.com"]
-
-    if (isProd && recipients.length === 1 && recipients[0] === "info@powersolid-intl.com") {
-      // Optional: force explicit recipient configuration in prod.
-      // Comment this out if you prefer the default.
-      // throw new Error("Missing RESEND_TO/CONTACT_EMAIL_TO in production")
-    }
-    const replyTo = email // already newline-stripped by normalizeLine
 
     const emailHtml = `
       <h2>Power Solid - New Website Inquiry</h2>
-      <p><strong>Name:</strong> ${safeFullName}</p>
-      <p><strong>Email:</strong> ${safeEmail}</p>
-      <p><strong>Phone:</strong> ${safePhone}</p>
-      <p><strong>Subject:</strong> ${safeSubject}</p>
+      <p><strong>Name:</strong> ${escapeHtml(fullName)}</p>
+      <p><strong>Email:</strong> ${escapeHtml(email)}</p>
+      <p><strong>Phone:</strong> ${escapeHtml(phone)}</p>
+      <p><strong>Subject:</strong> ${escapeHtml(subject)}</p>
       <p><strong>Message:</strong></p>
       <p>${safeMessageHtml}</p>
     `
 
+    /* ---------- FROM ADDRESS ---------- */
+    const resendFromEnv = process.env.RESEND_FROM
+    const resendFrom =
+      resendFromEnv || "Power Solid Website <onboarding@resend.dev>"
+
+    if (
+      isProd &&
+      (!resendFromEnv || resendFrom.includes("onboarding@resend.dev"))
+    ) {
+      throw new Error(
+        "RESEND_FROM must be a verified domain email in production."
+      )
+    }
+
+    /* ---------- RECIPIENT LOGIC ---------- */
+    const recipientsFromResendTo = parseRecipientList(process.env.RESEND_TO)
+    const recipientsFromContactTo = parseRecipientList(
+      process.env.CONTACT_EMAIL_TO
+    )
+
+    const recipients = isProd
+      ? recipientsFromResendTo.length
+        ? recipientsFromResendTo
+        : recipientsFromContactTo.length
+          ? recipientsFromContactTo
+          : ["info@powersolid-intl.com"]
+      : [TESTING_RECIPIENT] // 👈 RESEND TEST MODE FIX
+
+    /* ---------- SEND ---------- */
     const response = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -246,7 +165,7 @@ export async function sendContactEmail(formData: {
       body: JSON.stringify({
         from: resendFrom,
         to: recipients,
-        reply_to: replyTo,
+        reply_to: email,
         subject: `New Manpower Request: ${subject}`,
         html: emailHtml,
       }),
@@ -255,15 +174,15 @@ export async function sendContactEmail(formData: {
     if (!response.ok) {
       const errorText = await response.text()
       console.error("Resend Error:", response.status, errorText)
-      throw new Error(`Resend request failed (${response.status})`)
+      throw new Error("Resend request failed")
     }
 
     return {
       success: true,
       message:
         lang === "ar"
-          ? "تم إرسال طلب القوى العاملة بنجاح."
-          : "Your manpower request has been sent successfully!",
+          ? "تم إرسال الطلب بنجاح."
+          : "Your request has been sent successfully!",
     }
   } catch (error) {
     console.error("Email Error:", error)
@@ -271,8 +190,8 @@ export async function sendContactEmail(formData: {
       success: false,
       message:
         lang === "ar"
-          ? "تعذر إرسال الطلب. يرجى المحاولة لاحقاً أو التواصل معنا مباشرة."
-          : "Failed to send email. Please try again later or contact us directly.",
+          ? "تعذر إرسال الطلب. يرجى المحاولة لاحقاً."
+          : "Failed to send email. Please try again later.",
     }
   }
 }
