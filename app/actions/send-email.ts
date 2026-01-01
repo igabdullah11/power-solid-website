@@ -141,6 +141,15 @@ function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 }
 
+function parseRecipientList(raw: string | undefined): string[] {
+  if (!raw) return []
+  return raw
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .filter(isValidEmail)
+}
+
 export async function sendContactEmail(formData: {
   fullName: string
   email: string
@@ -189,6 +198,12 @@ export async function sendContactEmail(formData: {
     const safeMessageHtml = escapeHtml(messageRaw).replace(/\n/g, "<br/>")
 
     const resendFrom = process.env.RESEND_FROM || "Power Solid Website <onboarding@resend.dev>"
+    const configuredRecipients =
+      parseRecipientList(process.env.RESEND_TO) ||
+      parseRecipientList(process.env.CONTACT_EMAIL_TO)
+    const recipients = configuredRecipients.length
+      ? configuredRecipients
+      : ["info@powersolid-intl.com"]
     const replyTo = email // already newline-stripped by normalizeLine
 
     const emailHtml = `
@@ -209,7 +224,7 @@ export async function sendContactEmail(formData: {
       },
       body: JSON.stringify({
         from: resendFrom,
-        to: ["info@powersolid-intl.com"],
+        to: recipients,
         reply_to: replyTo,
         subject: `New Manpower Request: ${subject}`,
         html: emailHtml,
@@ -235,8 +250,8 @@ export async function sendContactEmail(formData: {
       success: false,
       message:
         lang === "ar"
-          ? "تعذر إرسال الطلب. يرجى الاتصال على +966 058 194 5796 أو مراسلتنا على info@powersolid-intl.com."
-          : "Failed to send email. Please call +966 058 194 5796 or email info@powersolid-intl.com.",
+          ? "تعذر إرسال الطلب. يرجى المحاولة لاحقاً أو التواصل معنا مباشرة."
+          : "Failed to send email. Please try again later or contact us directly.",
     }
   }
 }
