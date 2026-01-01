@@ -345,12 +345,12 @@ export default function ContactUsPage() {
       <section className="relative bg-black text-white pt-40 pb-32 md:pt-48 md:pb-40">
         <div className="absolute inset-0 z-0">
           <Image
-            src="/optimized/construction-site2.webp"
+            src="/images/construction-site2.jpg"
             alt=""
             fill
             priority
             sizes="100vw"
-            quality={80}
+            quality={70}
             className="object-cover"
           />
           <div className="absolute inset-0 bg-black/70" />

@@ -538,13 +538,13 @@ export default function ProjectsPage() {
       <section className="relative bg-black text-white pt-40 pb-32">
         <div className="absolute inset-0 bg-black/70 z-10" />
         <Image
-          src="/optimized/construction-projects-overview-aerial.webp"
+          src="/construction-projects-overview-aerial.jpg"
           alt="Projects"
           fill
           className="object-cover"
           priority
           sizes="100vw"
-          quality={80}
+          quality={70}
         />
         <div className="container mx-auto px-4 relative z-20 text-center">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
@@ -597,7 +597,7 @@ export default function ProjectsPage() {
                     fill
                     className="object-cover"
                     sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-                    quality={80}
+                    quality={70}
                   />
                 </div>
 

@@ -11,43 +11,43 @@ const SLIDES = [
     id: 1,
     heading: { en: "Certified Manpower.", ar: "قوى عاملة معتمدة." },
     highlight: { en: "Industrial Ready.", ar: "جاهزة للمواقع الصناعية." },
-    image: "/optimized/hero1.webp",
+    image: "/hero1.webp",
   },
   {
     id: 2,
     heading: { en: "Shutdown & Turnaround Teams", ar: "فرق الإيقاف والتوقفات" },
     highlight: { en: "— On Time.", ar: "— في الوقت المحدد." },
-    image: "/optimized/hero2.webp",
+    image: "/hero2.webp",
   },
   {
     id: 3,
     heading: { en: "Your Offshore & Onshore", ar: "شريكك في المشاريع" },
     highlight: { en: "Contracting Partner.", ar: "البرية والبحرية." },
-    image: "/optimized/hero3.webp",
+    image: "/hero3.webp",
   },
   {
     id: 4,
     heading: { en: "Safety-First Workforce", ar: "قوى عاملة تضع السلامة أولاً" },
     highlight: { en: "for Critical Sites.", ar: "للمواقع الحساسة." },
-    image: "/optimized/hero4.webp",
+    image: "/hero4.webp",
   },
   {
     id: 5,
     heading: { en: "Fast Mobilization", ar: "تعبئة سريعة" },
     highlight: { en: "Across Saudi Arabia.", ar: "في أنحاء المملكة." },
-    image: "/optimized/hero5.webp",
+    image: "/hero5.webp",
   },
   {
     id: 6,
     heading: { en: "Quality Construction Materials.", ar: "مواد إنشائية بجودة عالية." },
     highlight: { en: "Delivered On Site.", ar: "تسليم مباشر للموقع." },
-    image: "/optimized/hero6.webp",
+    image: "/hero6.webp",
   },
   {
     id: 7,
     heading: { en: "Trusted Supply Partner", ar: "شريك توريد موثوق" },
     highlight: { en: "for Projects & Contractors.", ar: "للمشاريع والمقاولين." },
-    image: "/optimized/hero7.webp",
+    image: "/hero7.webp",
   },
 ]
 
@@ -148,7 +148,7 @@ export function HeroSection() {
             alt=""
             fill
             sizes="100vw"
-            quality={80}
+            quality={70}
             priority={i === 0}
             className={`object-cover ${i === currentIndex && !isTransitioning ? "hero-kenburns" : ""}`}
           />
