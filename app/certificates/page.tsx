@@ -261,7 +261,15 @@ export default function CertificatesPage() {
       {/* Hero Section */}
       <section className="relative bg-black pt-36 pb-28 text-white">
         <div className="absolute inset-0 z-0">
-          <Image src="/refinery-turnaround-maintenance.jpg" alt="" fill priority className="object-cover" />
+          <Image
+            src="/optimized/refinery-turnaround-maintenance.webp"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            quality={80}
+            className="object-cover"
+          />
           <div className="absolute inset-0 bg-black/70" />
         </div>
 

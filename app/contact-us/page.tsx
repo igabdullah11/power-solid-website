@@ -344,7 +344,15 @@ export default function ContactUsPage() {
       {/* ✅ HERO SECTION (MANPOWER OPTIMIZED) */}
       <section className="relative bg-black text-white pt-40 pb-32 md:pt-48 md:pb-40">
         <div className="absolute inset-0 z-0">
-          <Image src="/images/construction-site2.jpg" alt="" fill priority className="object-cover" />
+          <Image
+            src="/optimized/construction-site2.webp"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            quality={80}
+            className="object-cover"
+          />
           <div className="absolute inset-0 bg-black/70" />
         </div>
 
