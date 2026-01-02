@@ -1,8 +1,7 @@
 "use client"
 
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import Image from "next/image"
-import { ChevronLeft, ChevronRight } from "lucide-react"
 import { useLanguage } from "@/components/language-provider"
 import { pickLang } from "@/lib/i18n"
 
@@ -60,9 +59,6 @@ export function HeroSection() {
 
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isTransitioning, setIsTransitioning] = useState(false)
-  const [paused, setPaused] = useState(false)
-
-  const resumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const currentSlide = useMemo(() => SLIDES[currentIndex], [currentIndex])
 
   // Preload only adjacent slides to avoid pulling *all* large hero images on first load.
@@ -93,45 +89,16 @@ export function HeroSection() {
     }, FADE_MS)
   }
 
-  const pauseAutoFor = (ms: number) => {
-    setPaused(true)
-    if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current)
-    resumeTimerRef.current = setTimeout(() => setPaused(false), ms)
-  }
-
   // Auto slide
   useEffect(() => {
-    if (paused) return
-
     const timer = setInterval(() => {
+      if (isTransitioning) return
       const nextIndex = (currentIndex + 1) % SLIDES.length
       startTransitionTo(nextIndex)
     }, SLIDE_DURATION_MS)
 
     return () => clearInterval(timer)
-  }, [paused, currentIndex])
-
-  // cleanup resume timer
-  useEffect(() => {
-    return () => {
-      if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current)
-    }
-  }, [])
-
-  const goToSlide = (i: number) => {
-    pauseAutoFor(12000)
-    startTransitionTo(i)
-  }
-
-  const nextSlide = () => {
-    pauseAutoFor(12000)
-    startTransitionTo((currentIndex + 1) % SLIDES.length)
-  }
-
-  const prevSlide = () => {
-    pauseAutoFor(12000)
-    startTransitionTo((currentIndex - 1 + SLIDES.length) % SLIDES.length)
-  }
+  }, [currentIndex, isTransitioning])
 
   return (
     <section className="relative h-screen min-h-[600px] w-full overflow-hidden bg-navy-dark">
@@ -166,38 +133,6 @@ export function HeroSection() {
       >
         <div className="absolute inset-0 bg-navy-dark/20" />
       </div>
-
-      {/* Arrows (bottom on mobile, center on desktop) */}
-      {/* Nesma-style navigation arrows */}
-      <button
-        type="button"
-        aria-label="Previous slide"
-        onClick={prevSlide}
-        className="
-          absolute z-20
-          left-4 bottom-32
-          md:left-10 md:top-1/2 md:-translate-y-1/2 md:bottom-auto
-          h-12 w-12 border border-accent/40 bg-navy-dark/60
-          text-white/90 backdrop-blur-sm hover:bg-accent hover:text-accent-foreground hover:border-accent transition-all duration-300
-        "
-      >
-        <ChevronLeft className="mx-auto h-6 w-6" />
-      </button>
-
-      <button
-        type="button"
-        aria-label="Next slide"
-        onClick={nextSlide}
-        className="
-          absolute z-20
-          right-4 bottom-32
-          md:right-10 md:top-1/2 md:-translate-y-1/2 md:bottom-auto
-          h-12 w-12 border border-accent/40 bg-navy-dark/60
-          text-white/90 backdrop-blur-sm hover:bg-accent hover:text-accent-foreground hover:border-accent transition-all duration-300
-        "
-      >
-        <ChevronRight className="mx-auto h-6 w-6" />
-      </button>
 
       {/* Nesma-style hero content - left aligned */}
       <div className="relative z-10 h-full pt-32 md:pt-40">
@@ -259,22 +194,7 @@ export function HeroSection() {
               </a>
             </div>
 
-            {/* Slide indicators - Nesma style */}
-            <div className="mt-12 flex items-center gap-3">
-              {SLIDES.map((_, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  onClick={() => goToSlide(i)}
-                  aria-label={`Go to slide ${i + 1}`}
-                  className={`h-1 transition-all duration-300 ${
-                    i === currentIndex 
-                      ? "w-12 bg-accent" 
-                      : "w-6 bg-white/30 hover:bg-white/50"
-                  }`}
-                />
-              ))}
-            </div>
+            {/* Auto slideshow: no manual controls */}
           </div>
         </div>
       </div>

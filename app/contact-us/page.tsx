@@ -413,12 +413,9 @@ export default function ContactUsPage() {
               <div className="bg-yellow-50 p-6 rounded-lg mt-8">
                 <h3 className="font-bold mb-4">{pickLang(lang, { en: "Business Hours", ar: "ساعات العمل" })}</h3>
                 <p className="text-sm">
-                  {pickLang(lang, { en: "Monday – Friday: 8:00 AM – 6:00 PM", ar: "الاثنين – الجمعة: 8:00 صباحاً – 6:00 مساءً" })}
+                  {pickLang(lang, { en: "Saturday – Thursday: 8:00 AM – 6:00 PM", ar: "السبت – الخميس: 8:00 صباحاً – 6:00 مساءً" })}
                 </p>
-                <p className="text-sm">
-                  {pickLang(lang, { en: "Saturday: 9:00 AM – 4:00 PM", ar: "السبت: 9:00 صباحاً – 4:00 مساءً" })}
-                </p>
-                <p className="text-sm">{pickLang(lang, { en: "Sunday: Closed", ar: "الأحد: مغلق" })}</p>
+                <p className="text-sm">{pickLang(lang, { en: "Friday: Closed", ar: "الجمعة: مغلق" })}</p>
               </div>
             </div>
 
